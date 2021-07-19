@@ -5,11 +5,10 @@ import os.path as path
 class SqlExecutor:
     def __init__(self, debug=False, db_name="papers_database.db"):
         self._local_dir = path.dirname(path.abspath(__file__))
-        self._db_path = path.join(self._local_dir, 'data', 'sqlite', db_name)
+        self._db_path = path.join(self._local_dir, '..', 'data', 'sqlite', db_name)
         self.debug = debug
 
         db_exists = path.isfile(self._db_path)
-
         self.db = sqlite3.connect(self._db_path)
         # load in the database if one doesn't exist before
         self.db.row_factory = SqlExecutor.dict_factory
@@ -21,7 +20,7 @@ class SqlExecutor:
 
     def _exec_core(self):
         cursor = self.db.cursor()
-        with open(path.join(self._local_dir, 'data', 'sqlite', 'sql', 'data_core.sql')) as sql:
+        with open(path.join(self._local_dir, '..', 'data', 'sqlite', 'sql', 'data_core.sql')) as sql:
             cursor.executescript(sql.read())
 
     def exec_select(self, sql, with_params=None):

@@ -5,10 +5,10 @@ class PaperCache:
     def __init__(self):
         self.db = SqlExecutor()
 
-    def store_paper(self, paper_id, title, abstract, year, journal, volume, pages, covidence, notes):
-        sql = 'INSERT INTO `PAPERS` (ID, title, ABSTRACT, PUBLISHED_YEAR, JOURNAL, VOLUME,PAGES, COVIDENCE, NOTES) ' \
-              'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        self.db.exec_insert(sql, (paper_id, title, abstract, year, journal, volume, pages, covidence, notes))
+    def store_paper(self, paper_id, title, abstract, year, journal, volume, issue, pages, covidence):
+        sql = 'INSERT INTO `PAPERS` (ID, TITLE, ABSTRACT, PUBLISHED_YEAR, JOURNAL, VOLUME, ISSUE, PAGES, ' \
+              'COVIDENCE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        self.db.exec_insert(sql, (paper_id, title, abstract, year, journal, volume, issue, pages, covidence))
 
     def store_keyword_to_paper(self, keyword, paper_id, weight):
         sql = 'INSERT INTO `PAPER_KEYWORDS` (KEYWORD, PAPER_ID, WEIGHT) VALUES (?, ?, ?)'
@@ -17,6 +17,11 @@ class PaperCache:
     def get_all_papers(self):
         sql = 'SELECT * FROM `PAPERS`'
         result = self.db.exec_select(sql).fetchall()
+        return result
+
+    def get_paper_from_paper_id(self, paper_id):
+        sql = 'SELECT * FROM `PAPERS` WHERE ID=?'
+        result = self.db.exec_select(sql, (paper_id,)).fetchall()
         return result
 
     def get_paper_from_year(self, year):
