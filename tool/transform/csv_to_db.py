@@ -65,10 +65,10 @@ def populate_keywords():
 
 
 if __name__ == "__main__":
-    # populate_paper_cache()
-    # populate_keywords()
+    populate_paper_cache()
+    populate_keywords()
     pc = PaperCache()
-    look_up = "South Korea"
+    look_up = "British Columbia"
     pc.get_top_10_papers_from_phrase(look_up)
 
 
