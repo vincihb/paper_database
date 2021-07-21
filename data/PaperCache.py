@@ -5,10 +5,10 @@ class PaperCache:
     def __init__(self):
         self.db = SqlExecutor()
 
-    def store_paper(self, paper_id, title, abstract, year, journal, volume, issue, pages, covidence):
-        sql = 'INSERT INTO `PAPERS` (ID, TITLE, ABSTRACT, PUBLISHED_YEAR, JOURNAL, VOLUME, ISSUE, PAGES, ' \
-              'COVIDENCE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        self.db.exec_insert(sql, (paper_id, title, abstract, year, journal, volume, issue, pages, covidence))
+    def store_paper(self, paper_id, doi, title, abstract, year, journal, volume, issue, pages, covidence):
+        sql = 'INSERT INTO `PAPERS` (ID, DOI, TITLE, ABSTRACT, PUBLISHED_YEAR, JOURNAL, VOLUME, ISSUE, PAGES, ' \
+              'COVIDENCE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        self.db.exec_insert(sql, (paper_id, doi, title, abstract, year, journal, volume, issue, pages, covidence))
 
     def store_keyword_to_paper(self, keyword, paper_id, weight):
         sql = 'INSERT INTO `PAPER_KEYWORDS` (KEYWORD, PAPER_ID, WEIGHT) VALUES (?, ?, ?)'
@@ -24,19 +24,25 @@ class PaperCache:
         result = self.db.exec_select(sql, (paper_id,)).fetchall()
         return result
 
+    def get_paper_from_paper_doi(self, doi):
+        sql = 'SELECT * FROM `PAPERS` WHERE DOI=?'
+        result = self.db.exec_select(sql, (doi,)).fetchall()
+        return result
+
     def get_paper_from_year(self, year):
         sql = 'SELECT * FROM `PAPERS` WHERE PUBLISHED_YEAR=?'
         result = self.db.exec_select(sql, (year,)).fetchall()
         return result
 
     def get_papers_from_author(self, author):
-        sql = 'SELECT * FROM `AUTHORS` INNER JOIN `PAPER` ON `AUTHORS`.PAPER_ID=`PAPER`.ID WHERE AUTHOR=?'
+        sql = 'SELECT * FROM `AUTHORS` INNER JOIN `PAPERS` ON `AUTHORS`.PAPER_ID=`PAPERs`.ID WHERE AUTHOR=?'
         result = self.db.exec_select(sql, (author,)).fetchall()
         return result
 
     def get_papers_from_keyword(self, keyword):
-        sql = 'SELECT * FROM `PAPER_KEYWORDS` WHERE KEYWORD=?'
-        result = self.db.exec_select(sql, (keyword,)).fetchall()
+        sql = 'SELECT * FROM `PAPER_KEYWORDS` INNER JOIN `PAPERS` ON `PAPER_KEYWORDS`.PAPER_ID=`PAPERS`.ID ' \
+              'WHERE KEYWORD=?'
+        result = self.db.exec_select(sql, (keyword.lower(),)).fetchall()
         return result
 
     def get_top_papers_from_keywords(self, keywords):
