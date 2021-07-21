@@ -1,4 +1,6 @@
 from db.SqlExecutor import SqlExecutor
+from nltk import word_tokenize
+from nltk.corpus import stopwords
 
 
 class PaperCache:
@@ -45,19 +47,96 @@ class PaperCache:
         result = self.db.exec_select(sql, (keyword.lower(),)).fetchall()
         return result
 
-    def get_top_papers_from_keywords(self, keywords):
-        bill_keyword = {}
-        for keyword in keywords:
-            result_list = self.get_papers_from_keyword(keyword)
-            for result_dict in result_list:
-                bill_id = result_dict.get('PAPER_ID')
-                weight = result_dict.get('WEIGHT')
-                if bill_id not in bill_keyword:
-                    bill_keyword.update({bill_id: weight})
-                else:
-                    old_weight = bill_keyword.get(bill_id)
-                    bill_keyword.update({bill_id: weight + old_weight})
-        return sorted(bill_keyword.items(), key=lambda x: x[1], reverse=True)
+    def _get_papers_from_keyword(self, keyword):
+        sql = 'SELECT * FROM `PAPER_KEYWORDS` WHERE KEYWORD=?'
+        result = self.db.exec_select(sql, (keyword.lower(),)).fetchall()
+        return result
+
+    @staticmethod
+    def _sort_papers_by_keyword_weight(result_list):
+        paper_keywords = {}
+        for result_dict in result_list:
+            paper_id = result_dict.get('PAPER_ID')
+            weight = result_dict.get('WEIGHT')
+            if paper_id not in paper_keywords:
+                paper_keywords.update({paper_id: weight})
+            else:
+                old_weight = paper_keywords.get(paper_id)
+                paper_keywords.update({paper_id: weight + old_weight})
+        return sorted(paper_keywords.items(), key=lambda x: x[1], reverse=True)
+
+    @staticmethod
+    def _intersection_of_papers(arr1, arr2):
+        to_return = []
+        for item in arr1:
+            to_return = to_return + [thing for thing in arr2 if item[0] in thing]
+        return to_return
+
+    def get_papers_from_phrase(self, phrase):
+        total_bag_of_keywords = self._extract_keywords(phrase)
+        keyword = total_bag_of_keywords[0]
+        returned_papers = self._get_papers_from_keyword(keyword)
+        sorted_papers = self._sort_papers_by_keyword_weight(returned_papers)
+        index = 1
+        while index < len(total_bag_of_keywords):
+            keyword = total_bag_of_keywords[index]
+            new_returned_papers = self.get_papers_from_keyword(keyword)
+            new_sorted_papers = self._sort_papers_by_keyword_weight(new_returned_papers)
+            sorted_papers = self._intersection_of_papers(sorted_papers, new_sorted_papers)
+            index = index + 1
+        return sorted_papers
+
+    def get_top_10_papers_from_phrase(self, phrase):
+        papers = self.get_papers_from_phrase(phrase)
+        print("Total number of papers mentioning " + phrase + " is " + str(len(papers)))
+        to_return = []
+        num_papers = 0
+        papers = sorted(papers, key=lambda x: x[1], reverse=True)
+        for paper in papers:
+            print("Number of mentions for keyword " + phrase + " is " + str(paper[1]))
+            returned = self.get_paper_from_paper_id(paper[0])
+            print(returned)
+            to_return = to_return + returned
+            if num_papers == 9:
+                break
+            num_papers = num_papers + 1
+        return to_return
+
+    @staticmethod
+    def _extract_keywords(text):
+        text = text.lower()
+        tokens = word_tokenize(text)
+        bag_of_words = [w for w in tokens if w.isalpha()]
+        bag_of_key_words = [w for w in bag_of_words if w not in stopwords.words('english')]
+        return bag_of_key_words
+
+    def get_top_papers_from_keyword(self, keyword):
+        paper_keywords = {}
+        result_list = self.get_papers_from_keyword(keyword)
+        for result_dict in result_list:
+            paper_id = result_dict.get('PAPER_ID')
+            weight = result_dict.get('WEIGHT')
+            if paper_id not in paper_keywords:
+                paper_keywords.update({paper_id: weight})
+            else:
+                old_weight = paper_keywords.get(paper_id)
+                paper_keywords.update({paper_id: weight + old_weight})
+        return sorted(paper_keywords.items(), key=lambda x: x[1], reverse=True)
+
+    def get_top_10_papers_from_keyword(self, keyword):
+        papers = self.get_top_papers_from_keyword(keyword)
+        print("Total number of papers mentioning " + keyword + " is " + str(len(papers)))
+        to_return = []
+        num_papers = 0
+        for paper in papers:
+            print("Number of mentions for keyword " + keyword + " is " + str(paper[1]))
+            returned = self.get_paper_from_paper_id(paper[0])
+            print(returned)
+            to_return = to_return + returned
+            if num_papers == 9:
+                break
+            num_papers = num_papers + 1
+        return to_return
 
     def get_all_keywords(self):
         sql = 'SELECT * FROM `PAPER_KEYWORDS`'
