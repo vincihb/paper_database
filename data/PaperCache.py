@@ -53,38 +53,13 @@ class PaperCache:
     # Getting papers from keywords in various forms
 
     def get_papers_from_keyword(self, keyword):
+        space = " "
+        if space in keyword:
+            return self.get_papers_from_phrase(keyword)
         sql = 'SELECT * FROM `PAPER_KEYWORDS` INNER JOIN `PAPERS` ON `PAPER_KEYWORDS`.PAPER_ID=`PAPERS`.ID ' \
               'WHERE KEYWORD=?'
         result = self.db.exec_select(sql, (keyword.lower(),)).fetchall()
-        return result
-
-    def get_top_papers_from_keyword(self, keyword):
-        paper_keywords = {}
-        result_list = self.get_papers_from_keyword(keyword)
-        for result_dict in result_list:
-            paper_id = result_dict.get('PAPER_ID')
-            weight = result_dict.get('WEIGHT')
-            if paper_id not in paper_keywords:
-                paper_keywords.update({paper_id: weight})
-            else:
-                old_weight = paper_keywords.get(paper_id)
-                paper_keywords.update({paper_id: weight + old_weight})
-        return sorted(paper_keywords.items(), key=lambda x: x[1], reverse=True)
-
-    def get_top_10_papers_from_keyword(self, keyword):
-        papers = self.get_top_papers_from_keyword(keyword)
-        print("Total number of papers mentioning " + keyword + " is " + str(len(papers)))
-        to_return = []
-        num_papers = 0
-        for paper in papers:
-            print("Number of mentions for keyword " + keyword + " is " + str(paper[1]))
-            returned = self.get_paper_from_paper_id(paper[0])
-            print(returned)
-            to_return = to_return + returned
-            if num_papers == 9:
-                break
-            num_papers = num_papers + 1
-        return to_return
+        return sorted(result, key=lambda x: x.get("WEIGHT"), reverse=True)
 
     def get_papers_from_keyword_filtered(self, keyword, filters):
         keyword_papers = self.get_papers_from_keyword(keyword)
@@ -98,15 +73,7 @@ class PaperCache:
                     to_return.append(paper)
             keyword_papers = to_return
             index = index + 1
-        return keyword_papers
-
-    # Getting papers from list of keywords, (AND and OR operations)
-
-    def get_papers_from_list_of_keywords_and(self, list_of_keywords):
-        pass
-
-    def get_papers_from_list_of_keywords_or(self, list_of_keywords):
-        pass
+        return sorted(keyword_papers, key= lambda x: x.get("WEIGHT"), reverse=True)
 
     # Getting papers from phrases
 
@@ -122,23 +89,65 @@ class PaperCache:
             new_sorted_papers = self._sort_papers_by_keyword_weight(new_returned_papers)
             sorted_papers = self._intersection_of_papers(sorted_papers, new_sorted_papers)
             index = index + 1
-        return sorted_papers
-
-    def get_top_10_papers_from_phrase(self, phrase):
-        papers = self.get_papers_from_phrase(phrase)
-        print("Total number of papers mentioning " + phrase + " is " + str(len(papers)))
         to_return = []
-        num_papers = 0
-        papers = sorted(papers, key=lambda x: x[1], reverse=True)
-        for paper in papers:
-            print("Number of mentions for keyword " + phrase + " is " + str(paper[1]))
-            returned = self.get_paper_from_paper_id(paper[0])
-            print(returned)
-            to_return = to_return + returned
-            if num_papers == 9:
-                break
-            num_papers = num_papers + 1
+        for paper_tuple in sorted_papers:
+            new_dict = self.get_paper_from_paper_id(paper_tuple[0])[0]
+            temp = {'KEYWORD': phrase.lower(), 'PAPER_ID': paper_tuple[0], 'WEIGHT': paper_tuple[1]}
+            temp.update(new_dict)
+            to_return.append(temp)
         return to_return
+
+    def get_papers_from_phrase_filtered(self, phrase, filters):
+        keyword_papers = self._get_papers_from_phrase(phrase)
+        index = 0
+        while index < len(filters):
+            excluding_papers = self._get_papers_from_phrase(filters[index])
+            excluding_papers = [item[0] for item in excluding_papers]
+            to_return = []
+            for paper in keyword_papers:
+                if paper[0] not in excluding_papers:
+                    to_return.append(paper)
+            keyword_papers = to_return
+            index = index + 1
+        to_return = []
+        for paper_tuple in keyword_papers:
+            new_dict = self.get_paper_from_paper_id(paper_tuple[0])[0]
+            temp = {'KEYWORD': phrase.lower(), 'PAPER_ID': paper_tuple[0], 'WEIGHT': paper_tuple[1]}
+            temp.update(new_dict)
+            to_return.append(temp)
+        return to_return
+
+    # Getting papers from list of keywords, (AND and OR operations)
+
+    def get_papers_from_list_of_keywords_and(self, list_of_keywords):
+        phrase = ""
+        space = " "
+        for word in list_of_keywords:
+            phrase = phrase + word + space
+        return self.get_papers_from_phrase(phrase)
+
+    def get_papers_from_list_of_keywords_or(self, list_of_keywords):
+        paper_keywords = self.get_papers_from_keyword(list_of_keywords[0])
+        index = 1
+        while index < len(list_of_keywords):
+            new_papers = self.get_papers_from_keyword(list_of_keywords[index])
+            for result_dict in new_papers:
+                paper_id = result_dict.get('PAPER_ID')
+                weight = result_dict.get('WEIGHT')
+                in_paper_keywords = False
+                for paper in paper_keywords:
+                    if paper.get('PAPER_ID') == paper_id:
+                        old_weight = paper.get('WEIGHT')
+                        paper.update({paper_id: weight + old_weight})
+                        old_keyword = paper.get('KEYWORD')
+                        if list_of_keywords[index] != old_keyword:
+                            paper.update({'KEYWORD': old_keyword + ' ' + list_of_keywords[index].lower()})
+                        in_paper_keywords = True
+                        break
+                if not in_paper_keywords:
+                    paper_keywords.append(result_dict)
+            index = index + 1
+        return sorted(paper_keywords, key=lambda x: x.get('WEIGHT'), reverse=True)
 
     # Hidden methods
 
@@ -146,6 +155,20 @@ class PaperCache:
         sql = 'SELECT * FROM `PAPER_KEYWORDS` WHERE KEYWORD=?'
         result = self.db.exec_select(sql, (keyword.lower(),)).fetchall()
         return result
+
+    def _get_papers_from_phrase(self, phrase):
+        total_bag_of_keywords = self._extract_keywords(phrase)
+        keyword = total_bag_of_keywords[0]
+        returned_papers = self._get_papers_from_keyword(keyword)
+        sorted_papers = self._sort_papers_by_keyword_weight(returned_papers)
+        index = 1
+        while index < len(total_bag_of_keywords):
+            keyword = total_bag_of_keywords[index]
+            new_returned_papers = self.get_papers_from_keyword(keyword)
+            new_sorted_papers = self._sort_papers_by_keyword_weight(new_returned_papers)
+            sorted_papers = self._intersection_of_papers(sorted_papers, new_sorted_papers)
+            index = index + 1
+        return sorted_papers
 
     @staticmethod
     def _sort_papers_by_keyword_weight(result_list):
@@ -162,11 +185,10 @@ class PaperCache:
 
     @staticmethod
     def _union_of_papers(arr1, arr2):
-        to_return = arr1
         for item in arr2:
-            if item not in to_return:
-                to_return.append(item)
-        return to_return
+            if item not in arr1:
+                arr1.append(item)
+        return arr1
 
     @staticmethod
     def _intersection_of_papers(arr1, arr2):

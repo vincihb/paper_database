@@ -68,23 +68,9 @@ if __name__ == "__main__":
     # populate_paper_cache()
     # populate_keywords()
     pc = PaperCache()
-    # look_up = "Columbia"
-    # papers = pc.get_papers_from_keyword(look_up)
-    # print("+++++++")
-    # for paper in papers:
-    #     print(paper)
-    # filters = ["British Columbia", "District of Columbia"]
-    # for filter_phrase in filters:
-    #     print("+++++++")
-    #     papers = pc.get_papers_from_phrase(filter_phrase)
-    #     print(filter_phrase)
-    #     print(papers)
-    # print("+++++++")
-    # papers = pc.get_papers_from_keyword_filtered(look_up, filters)
-    # for paper in papers:
-    #     print(paper)
-
-    pc.get_top_10_papers_from_phrase('Stream')
+    papers = pc.get_papers_from_list_of_keywords_or(["Columbia", "Washington"])
+    for paper in papers:
+        print(paper)
 
 
 
