@@ -16,6 +16,10 @@ class PaperCache:
         sql = 'INSERT INTO `PAPER_KEYWORDS` (KEYWORD, PAPER_ID, WEIGHT) VALUES (?, ?, ?)'
         self.db.exec_insert(sql, (keyword, paper_id, weight))
 
+    def store_author(self, paper_id, author):
+        sql = 'INSERT INTO `AUTHORS` (AUTHOR, PAPER_ID) VALUES (?, ?)'
+        self.db.exec_insert(sql, (author, paper_id))
+
     # Get a list of all the papers and keywords
 
     def get_all_papers(self):
@@ -47,7 +51,7 @@ class PaperCache:
 
     def get_papers_from_author(self, author):
         sql = 'SELECT * FROM `AUTHORS` INNER JOIN `PAPERS` ON `AUTHORS`.PAPER_ID=`PAPERs`.ID WHERE AUTHOR=?'
-        result = self.db.exec_select(sql, (author,)).fetchall()
+        result = self.db.exec_select(sql, (author, )).fetchall()
         return result
 
     # Getting papers from keywords in various forms
@@ -95,7 +99,7 @@ class PaperCache:
             temp = {'KEYWORD': phrase.lower(), 'PAPER_ID': paper_tuple[0], 'WEIGHT': paper_tuple[1]}
             temp.update(new_dict)
             to_return.append(temp)
-        return to_return
+        return sorted(to_return, key=lambda x: x.get('WEIGHT'), reverse=True)
 
     def get_papers_from_phrase_filtered(self, phrase, filters):
         keyword_papers = self._get_papers_from_phrase(phrase)
@@ -117,7 +121,8 @@ class PaperCache:
             to_return.append(temp)
         return to_return
 
-    # Getting papers from list of keywords, (AND and OR operations)
+    # Getting papers from list of keywords, (AND, which is intersection of sets, and OR, which is union of sets,
+    # operations)
 
     def get_papers_from_list_of_keywords_and(self, list_of_keywords):
         phrase = ""

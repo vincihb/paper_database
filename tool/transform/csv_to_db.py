@@ -1,7 +1,6 @@
 from data.PaperCache import PaperCache
 from os import path
 import csv
-import time
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 
@@ -64,13 +63,44 @@ def populate_keywords():
     print("Finished Adding Keywords")
 
 
-if __name__ == "__main__":
-    # populate_paper_cache()
-    # populate_keywords()
+def populate_author_cache():
+    print("Populating author cache")
+    local_dir = path.dirname(path.abspath(__file__))
+    object_path = path.join(local_dir, '..', '..', 'data', "papers.csv")
     pc = PaperCache()
-    papers = pc.get_papers_from_list_of_keywords_or(["Columbia", "Washington"])
-    for paper in papers:
-        print(paper)
+    with open(object_path) as csv_file:
+        data = csv.reader(csv_file)
+        index = 0
+        for lines in data:
+            if index == 0:
+                print(lines)
+                index = index + 1
+                continue
+            authors = lines[1].split(';')
+            paper_id = pc.get_paper_from_paper_doi(lines[10])[0].get('ID')
+            for author in authors:
+                if ',' not in author:
+                    continue
+                name = author.split(',')
+                if name[0][0] == ' ':
+                    author_name = name[1][1:] + name[0]
+                else:
+                    author_name = name[1][1:] + ' ' + name[0]
+                papers = pc.get_papers_from_author(author_name)
+                store_paper = True
+                for paper in papers:
+                    if paper.get('ID') == paper_id:
+                        store_paper = False
+                if store_paper:
+                    pc.store_author(paper_id, author_name)
+            index = index + 1
+    print("Finished populating author table")
+
+
+if __name__ == "__main__":
+    populate_paper_cache()
+    populate_keywords()
+    populate_author_cache()
 
 
 
