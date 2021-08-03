@@ -19,6 +19,7 @@ def populate_paper_cache():
                 index = index + 1
                 continue
             if pc.get_paper_from_paper_doi(lines[10]):
+                index = index + 1
                 continue
             if lines[3] == '':
                 published_year = 0
@@ -97,10 +98,26 @@ def populate_author_cache():
     print("Finished populating author table")
 
 
+def fix_doi():
+    pc = PaperCache()
+    papers = pc.get_all_papers()
+    http_string = "http://dx.doi.org/"
+    https_string = "https://dx.doi.org/"
+    for paper in papers:
+        doi = paper.get('DOI')
+        if http_string in doi:
+            print(paper)
+            pc.update_doi(paper.get('ID'), doi[len(http_string):])
+        elif https_string in doi:
+            print(paper)
+            pc.update_doi(paper.get('ID'), doi[len(https_string):])
+
+
 if __name__ == "__main__":
     populate_paper_cache()
     populate_keywords()
     populate_author_cache()
+    fix_doi()
 
 
 

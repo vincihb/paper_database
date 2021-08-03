@@ -20,7 +20,13 @@ class PaperCache:
         sql = 'INSERT INTO `AUTHORS` (AUTHOR, PAPER_ID) VALUES (?, ?)'
         self.db.exec_insert(sql, (author, paper_id))
 
-    # Get a list of all the papers and keywords
+    # Fixing the DOI
+
+    def update_doi(self, paper_id, doi):
+        sql = 'UPDATE `PAPERS` SET DOI=? WHERE ID=?'
+        self.db.exec_update(sql, (doi, paper_id))
+
+    # Get a list of all the papers and keywords 
 
     def get_all_papers(self):
         sql = 'SELECT * FROM `PAPERS`'
@@ -31,6 +37,26 @@ class PaperCache:
         sql = 'SELECT * FROM `PAPER_KEYWORDS`'
         result = self.db.exec_select(sql).fetchall()
         return result
+
+    # Get all keywords from paper
+
+    def get_keywords_from_paper(self, paper):
+        paper_id = paper[0].get('ID')
+        sql = 'SELECT * FROM `PAPER_KEYWORDS` WHERE PAPER_ID=?'
+        result = self.db.exec_select(sql, (paper_id,)).fetchall()
+        return sorted(result, key=lambda x: x.get("WEIGHT"), reverse=True)
+
+    def get_keywords_from_paper_id(self, paper_id):
+        sql = 'SELECT * FROM `PAPER_KEYWORDS` WHERE PAPER_ID=?'
+        result = self.db.exec_select(sql, (paper_id,)).fetchall()
+        return sorted(result, key=lambda x: x.get("WEIGHT"), reverse=True)
+
+    def get_keywords_from_paper_doi(self, doi):
+        paper = self.get_paper_from_paper_doi(doi)
+        paper_id = paper[0].get('ID')
+        sql = 'SELECT * FROM `PAPER_KEYWORDS` WHERE PAPER_ID=?'
+        result = self.db.exec_select(sql, (paper_id,)).fetchall()
+        return sorted(result, key=lambda x: x.get("WEIGHT"), reverse=True)
 
     # Easy way of searching papers
 

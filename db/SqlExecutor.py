@@ -67,6 +67,13 @@ class SqlExecutor:
         cursor = self._exec_sql(sql, with_params)
         return cursor.lastrowid
 
+    def exec_update(self, sql, with_params=None):
+        if self.debug:
+            print(sql)
+
+        cursor = self._exec_sql(sql, with_params)
+        return cursor.lastrowid
+
     def _exec_sql(self, sql, with_params):
         if self.is_closed:
             return None
