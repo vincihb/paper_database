@@ -91,7 +91,9 @@ class PaperCache:
         result = self.db.exec_select(sql, (keyword.lower(),)).fetchall()
         return sorted(result, key=lambda x: x.get("WEIGHT"), reverse=True)
 
-    def get_papers_from_keyword_filtered(self, keyword, filters):
+    # Get papers, but filter out (equivalently the NOT function)
+    
+    def get_papers_from_keyword_not(self, keyword, filters):
         keyword_papers = self.get_papers_from_keyword(keyword)
         index = 0
         while index < len(filters):
@@ -103,7 +105,20 @@ class PaperCache:
                     to_return.append(paper)
             keyword_papers = to_return
             index = index + 1
-        return sorted(keyword_papers, key= lambda x: x.get("WEIGHT"), reverse=True)
+        return sorted(keyword_papers, key=lambda x: x.get("WEIGHT"), reverse=True)
+
+    def get_papers_not(self, papers, filters):
+        index = 0
+        while index < len(filters):
+            excluding_papers = self.get_papers_from_phrase(filters[index])
+            excluding_papers = [item[0] for item in excluding_papers]
+            to_return = []
+            for paper in papers:
+                if paper.get('PAPER_ID') not in excluding_papers:
+                    to_return.append(paper)
+            papers = to_return
+            index = index + 1
+        return sorted(papers, key=lambda x: x.get("WEIGHT"), reverse=True)
 
     # Getting papers from phrases
 

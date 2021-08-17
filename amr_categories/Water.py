@@ -29,23 +29,27 @@ class Water:
                 if index == 0:
                     keywords = ["surface", "water", "river", "lake", "stream"]
                 elif index == 1:
-                    keywords = ["ground", "water", "watertable", "artesian", "aquifers"]
+                    keywords = ["ground", "watertable", "artesian", "aquifer", "aquifers"]
                 elif index == 2:
-                    keywords = ["karst", "ground", "water", "dissolution", "type",  "landscape"]
+                    keywords = ["karst", "karst aquifer", " karst groundwater",
+                                "ground", "water", "limestone", "carbonate", "dissolution-type landscape"]
                 elif index == 3:
-                    keywords = ["stormwater", "runoff", "untreated", "rainfall"]
+                    keywords = ["surface runoff",
+                                "urban runoff", "industrial runoff", "agriculture runoff", "nonpoint source water",
+                                "precipitation", "rainfall", "drainage feature", "class V injection well"]
                 elif index == 4:
-                    keywords = ["residential", "household"]
+                    keywords = ["residential", "household", "drinking water"]
                 elif index == 5:
-                    keywords = ["industrial"]
+                    keywords = ["industrial", "municipal water"]
                 elif index == 6:
-                    keywords = ["agricultural", "wastewater", "irrigation", "crop", "animal", "waste"]
+                    keywords = ["agricultural", "irrigation", "crop", "animal waste", "livestock",
+                                "animal", "wastewater"]
                 elif index == 7:
-                    keywords = ["industrial", "wastewater"]
+                    keywords = ["industrial waste", "heavy metals"]
                 elif index == 8:
                     keywords = ["municipal", "residential", "wastewater", "sewage"]
                 else:
-                    keywords = ["pharmaceutical", "laboratory", "pharmaceutical", "drug", "development"]
+                    keywords = ["pharmaceutical", "laboratory", "drug development"]
                 self._keywords_to_subcategories.update({subcat: keywords})
                 index = index + 1
 
@@ -58,6 +62,7 @@ class Water:
         to_input = []
         for subcat in subcategories:
             to_input = to_input + self._keywords_to_subcategories.get(subcat)
+        to_input = list(dict.fromkeys(to_input))
         return self.pc.get_papers_from_list_of_keywords_or(to_input)
 
     def get_watercode_from_paper(self, paper):
@@ -165,9 +170,13 @@ if __name__ == "__main__":
     print(w.watercodes)
     print(w.subcategories)
     print(w.keywords_to_subcategories)
-    papers = w.get_papers_from_watercode('blue')
+    papers = w.get_papers_from_watercode('green')
     print(len(papers))
+    index = 0
     for paper in papers:
         print(paper)
-    print(w.get_watercode_from_paper_id('4564'))
+        if index == 10:
+            break
+        index = index + 1
+    print(w.get_watercode_from_paper_id('3375'))
 

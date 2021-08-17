@@ -118,6 +118,12 @@ if __name__ == "__main__":
     populate_keywords()
     populate_author_cache()
     fix_doi()
+    # pc = PaperCache()
+    # papers = pc.get_papers_from_phrase("cephalosporin use in animals")
+    # print(len(papers))
+    # for paper in papers:
+    #     print(paper)
+
 
 
 
