@@ -10,13 +10,14 @@ class Themes:
         self.water = Water()
         self.human_ipc = "Infection Prevention and Control, hygiene, hand hygiene, personal protective equipment, " \
                          "PPE, disinfection, sterilization, safe disposal, environmental cleaning, isolation, " \
-                         "waste management, sanitation, surfaces, stewardship, hospital, clinical, health care " \
-                         "facility "
+                         "waste management, sanitation, surfaces, " \
+                         "stewardship, hospital, clinical, health care " \
+                         "facility"
         self.human_ipc = self.human_ipc.split(", ")
-        self.human_consumption = "consumption, antibiotic overuse, antibiotic prescribing, antibiotic use, antibiotic " \
-                                 "access, over the counter, antibiotic misuse, dosage, treatment duration, " \
+        self.human_consumption = "consumption, antibiotic overuse, antibiotic prescribing, antibiotic use, " \
+                                 "antibiotic, access, over the counter, antibiotic misuse, dosage, treatment duration, " \
                                  "daily dose, prescribing practices, stewardship,  hospital, clinical, health care " \
-                                 "facility, doctor, nurse, pharmacist"
+                                 "healthcare, facility, doctor, nurse, pharmacist"
         self.human_consumption = self.human_consumption.split(", ")
         self.r_and_d = "discovery, laboratory, novel, therapeutic, research, innovation, innovative, " \
                        "new antimicrobials, R&D, new diagnostics, new classes of medication, accelerator, " \
@@ -32,8 +33,10 @@ class Themes:
         keywords = self.water.keywords_to_subcategories
         additional_keywords = []
         for key in keywords.keys():
-            additional_keywords = additional_keywords + keywords.get(key)
+            if keywords.get(key) not in self.clean_water:
+                additional_keywords = additional_keywords + keywords.get(key)
         self.clean_water = self.clean_water + additional_keywords
+        self.clean_water = list(dict.fromkeys(self.clean_water))
         self.environment = "environmental contamination, environmental AMR, pollution source, water, soil, " \
                            "transmission vector, selective pressure, reservoir, resistance development, " \
                            "source of resistance, antibiotic concentration, run-off, wildlife, manures, ecology, " \
@@ -42,7 +45,7 @@ class Themes:
         self.food_safety = "food supply, supply of food, food safety, food security, food handling, street food, " \
                            "food contamination, food processing, food production, food retail, supply chain, " \
                            "food import, industrial hygiene, food systems, grocery, food packaging, foodborne, " \
-                           "food-borne, surfaces"
+                           "food-borne"
         self.food_safety = self.food_safety.split(", ")
         self.animals = "Animals, farm animals, food producing animals, poultry, birds, pigs, cows, poultry, " \
                        "livestock, veterinary, companion animals, husbandary, aquaculture, ruminants, probiotics, " \
@@ -51,7 +54,7 @@ class Themes:
         self.animals = self.animals.split(", ")
         self.plants = "pesticides, " \
                       "herbicides, fungicides, fertilizers, tree, trees, agriculture, soil, " \
-                      "plants, aquaculture, food produce, fruit, vegetable, " \
+                      "plants NOT wastewater, plant NOT wastewater, aquaculture, food produce, fruit, vegetable, " \
                       "harvest, crop, food, horticulture, nursery, orchard, biocide, farm, leaf, leaves, legume, " \
                       "roots, manures, horticulture, botany"
         self.plants = self.plants.split(", ")
@@ -139,11 +142,44 @@ class Themes:
 
 if __name__ == "__main__":
     a = Themes()
-    papers = a.get_food_safety()
+    papers = a.get_clean_water()
+    print(a.clean_water)
     print(len(papers))
     i = 0
     for paper in papers:
-        print(paper)
         if i == 10:
             break
         i = i + 1
+        print(paper)
+    for paper in papers:
+        if paper.get("DOI") == '10.1186/1471-2458-10-414':
+            print(paper)
+            break
+
+    # pc = PaperCache()
+    # papers = pc.get_papers_from_list_of_keywords_or(["Columbia", "British Columbia"])
+    # print(len(papers))
+    # i = 0
+    # for paper in papers:
+    #     print(paper)
+    #     # if i == 10:
+    #     #     break
+    #     i = i + 1
+    #
+    # papers = pc.get_papers_from_keyword("Columbia")
+    # print(len(papers))
+    # i = 0
+    # for paper in papers:
+    #     print(paper)
+    #     # if i == 10:
+    #     #     break
+    #     i = i + 1
+    #
+    # papers = pc.get_papers_from_keyword("British Columbia")
+    # print(len(papers))
+    # i = 0
+    # for paper in papers:
+    #     print(paper)
+    #     # if i == 10:
+    #     #     break
+    #     i = i + 1

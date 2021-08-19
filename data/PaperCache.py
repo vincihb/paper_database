@@ -92,7 +92,7 @@ class PaperCache:
         return sorted(result, key=lambda x: x.get("WEIGHT"), reverse=True)
 
     # Get papers, but filter out (equivalently the NOT function)
-    
+
     def get_papers_from_keyword_not(self, keyword, filters):
         keyword_papers = self.get_papers_from_keyword(keyword)
         index = 0
@@ -181,17 +181,22 @@ class PaperCache:
                 paper_id = result_dict.get('PAPER_ID')
                 weight = result_dict.get('WEIGHT')
                 in_paper_keywords = False
-                for paper in paper_keywords:
+                i = 0
+                while i < len(paper_keywords):
+                    paper = paper_keywords[i].copy()
                     if paper.get('PAPER_ID') == paper_id:
                         old_weight = paper.get('WEIGHT')
-                        paper.update({paper_id: weight + old_weight})
+                        paper.update({'WEIGHT': weight + old_weight})
                         old_keyword = paper.get('KEYWORD')
                         if list_of_keywords[index] != old_keyword:
-                            paper.update({'KEYWORD': old_keyword + ' ' + list_of_keywords[index].lower()})
+                            paper.update({'KEYWORD': old_keyword + ', ' + list_of_keywords[index].lower()})
                         in_paper_keywords = True
                         break
+                    i = i + 1
                 if not in_paper_keywords:
                     paper_keywords.append(result_dict)
+                else:
+                    paper_keywords[i] = paper
             index = index + 1
         return sorted(paper_keywords, key=lambda x: x.get('WEIGHT'), reverse=True)
 
