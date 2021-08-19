@@ -172,6 +172,18 @@ class PaperCache:
             phrase = phrase + word + space
         return self.get_papers_from_phrase(phrase)
 
+    @staticmethod
+    def get_papers_and(papers_1, papers_2):
+        to_return = []
+        for paper_1 in papers_1:
+            for paper_2 in papers_2:
+                if paper_1.get("PAPER_ID") == paper_2.get("PAPER_ID"):
+                    old_keywords = paper_1.get("KEYWORD")
+                    new_keywords = paper_2.get("KEYWORD")
+                    paper_1.update({"KEYWORD": old_keywords + ", " + new_keywords})
+                    to_return.append(paper_1)
+        return to_return
+
     def get_papers_from_list_of_keywords_or(self, list_of_keywords):
         paper_keywords = self.get_papers_from_keyword(list_of_keywords[0])
         index = 1
@@ -199,6 +211,10 @@ class PaperCache:
                     paper_keywords[i] = paper
             index = index + 1
         return sorted(paper_keywords, key=lambda x: x.get('WEIGHT'), reverse=True)
+
+    @staticmethod
+    def get_papers_or(papers_1, papers_2):
+        pass
 
     # Hidden methods
 
