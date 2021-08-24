@@ -214,7 +214,24 @@ class PaperCache:
 
     @staticmethod
     def get_papers_or(papers_1, papers_2):
-        pass
+        to_return = []
+        for paper_1 in papers_1:
+            common_paper = False
+            i = 0
+            while i < len(papers_2):
+                paper_2 = papers_2[i]
+                if paper_1.get("ID") == paper_2.get("ID"):
+                    common_paper = True
+                    weight_1 = paper_1.get("WEIGHT")
+                    weight_2 = paper_2.get("WEIGHT")
+                    paper_1.update({'WEIGHT': weight_1 + weight_2})
+                    paper_1.update({'KEYWORD': paper_1.get('KEYWORD') + ', ' + paper_2.get('KEYWORD')})
+                    to_return.append(paper_1)
+                    papers_2.pop(i)
+                    break
+                i = i + 1
+            if not common_paper:
+                to_return.append(paper_1)
 
     # Hidden methods
 
