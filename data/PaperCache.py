@@ -20,6 +20,14 @@ class PaperCache:
         sql = 'INSERT INTO `AUTHORS` (AUTHOR, PAPER_ID) VALUES (?, ?)'
         self.db.exec_insert(sql, (author, paper_id))
 
+    def store_sector(self, sector, paper_id):
+        sql = 'INSERT INTO `SECTORS` (SECTOR, PAPER_ID) VALUES (?, ?)'
+        self.db.exec_insert(sql, (sector, paper_id))
+
+    def store_country(self, country, paper_id):
+        sql = 'INSERT INTO `COUNTRY` (COUNTRY_NAME, PAPER_ID) VALUES (?, ?)'
+        self.db.exec_insert(sql, (country, paper_id))
+
     # Fixing the DOI
 
     def update_doi(self, paper_id, doi):
@@ -37,6 +45,23 @@ class PaperCache:
         sql = 'SELECT * FROM `PAPER_KEYWORDS`'
         result = self.db.exec_select(sql).fetchall()
         return result
+
+    def get_all_sectors(self):
+        sql = 'SELECT * FROM `SECTORS`'
+        result = self.db.exec_select(sql).fetchall()
+        return sorted(result, key=lambda x: int(x.get('PAPER_ID')))
+
+    # Sector and country getters
+
+    def get_papers_from_sector(self, sector):
+        sql = 'SELECT * FROM `SECTORS` INNER JOIN `PAPERS` ON `SECTORS`.PAPER_ID=`PAPERS`.ID WHERE SECTOR=?'
+        result = self.db.exec_select(sql, (sector,)).fetchall()
+        return sorted(result, key=lambda x: int(x.get('ID')))
+
+    def get_papers_from_country(self, country):
+        sql = 'SELECT * FROM `COUNTRY` INNER JOIN `PAPERS` ON `COUNTRY`.PAPER_ID=`PAPERS`.ID WHERE COUNTRY_NAME=?'
+        result = self.db.exec_select(sql, (country,)).fetchall()
+        return sorted(result, key=lambda x: int(x.get('ID')))
 
     # Get all keywords from paper
 
@@ -76,7 +101,7 @@ class PaperCache:
         return result
 
     def get_papers_from_author(self, author):
-        sql = 'SELECT * FROM `AUTHORS` INNER JOIN `PAPERS` ON `AUTHORS`.PAPER_ID=`PAPERs`.ID WHERE AUTHOR=?'
+        sql = 'SELECT * FROM `AUTHORS` INNER JOIN `PAPERS` ON `AUTHORS`.PAPER_ID=`PAPERS`.ID WHERE AUTHOR=?'
         result = self.db.exec_select(sql, (author, )).fetchall()
         return result
 
@@ -119,6 +144,18 @@ class PaperCache:
             papers = to_return
             index = index + 1
         return sorted(papers, key=lambda x: x.get("WEIGHT"), reverse=True)
+
+    @staticmethod
+    def get_papers_set_not(papers_1, papers_2):
+        to_return = []
+        for paper_1 in papers_1:
+            in_other_set = False
+            for paper_2 in papers_2:
+                if paper_1.get("ID") == paper_2.get("ID"):
+                    in_other_set = True
+            if not in_other_set:
+                to_return.append(paper_1)
+        return sorted(to_return, key=lambda x: int(x.get("ID")), reverse=False)
 
     # Getting papers from phrases
 
@@ -181,6 +218,19 @@ class PaperCache:
                     old_keywords = paper_1.get("KEYWORD")
                     new_keywords = paper_2.get("KEYWORD")
                     paper_1.update({"KEYWORD": old_keywords + ", " + new_keywords})
+                    paper_1.update({"WEIGHT": paper_1.get("WEIGHT") + paper_2.get("WEIGHT")})
+                    to_return.append(paper_1)
+        return to_return
+
+    @staticmethod
+    def get_papers_and_countries(papers_1, papers_2):
+        to_return = []
+        for paper_1 in papers_1:
+            for paper_2 in papers_2:
+                if paper_1.get("ID") == paper_2.get("ID"):
+                    old_keywords = paper_1.get("COUNTRY_NAME")
+                    new_keywords = paper_2.get("COUNTRY_NAME")
+                    paper_1.update({"COUNTRY_NAME": old_keywords + ", " + new_keywords})
                     to_return.append(paper_1)
         return to_return
 
@@ -212,26 +262,43 @@ class PaperCache:
             index = index + 1
         return sorted(paper_keywords, key=lambda x: x.get('WEIGHT'), reverse=True)
 
-    @staticmethod
-    def get_papers_or(papers_1, papers_2):
-        to_return = []
+    def get_papers_or(self, papers_1, papers_2):
+        to_return = self.get_papers_and(papers_1, papers_2)
         for paper_1 in papers_1:
-            common_paper = False
-            i = 0
-            while i < len(papers_2):
-                paper_2 = papers_2[i]
-                if paper_1.get("ID") == paper_2.get("ID"):
-                    common_paper = True
-                    weight_1 = paper_1.get("WEIGHT")
-                    weight_2 = paper_2.get("WEIGHT")
-                    paper_1.update({'WEIGHT': weight_1 + weight_2})
-                    paper_1.update({'KEYWORD': paper_1.get('KEYWORD') + ', ' + paper_2.get('KEYWORD')})
-                    to_return.append(paper_1)
-                    papers_2.pop(i)
-                    break
-                i = i + 1
-            if not common_paper:
+            in_common_papers = False
+            for paper in to_return:
+                if paper.get("ID") == paper_1.get("ID"):
+                    in_common_papers = True
+            if not in_common_papers:
                 to_return.append(paper_1)
+        for paper_2 in papers_2:
+            in_common_papers = False
+            for paper in to_return:
+                if paper.get("ID") == paper_2.get("ID"):
+                    in_common_papers = True
+            if not in_common_papers:
+                to_return.append(paper_2)
+        to_return = sorted(to_return, key=lambda x: x.get('WEIGHT'), reverse=True)
+        return to_return
+
+    def get_papers_or_countries(self, papers_1, papers_2):
+        to_return = self.get_papers_and_countries(papers_1, papers_2)
+        for paper_1 in papers_1:
+            in_common_papers = False
+            for paper in to_return:
+                if paper.get("ID") == paper_1.get("ID"):
+                    in_common_papers = True
+            if not in_common_papers:
+                to_return.append(paper_1)
+        for paper_2 in papers_2:
+            in_common_papers = False
+            for paper in to_return:
+                if paper.get("ID") == paper_2.get("ID"):
+                    in_common_papers = True
+            if not in_common_papers:
+                to_return.append(paper_2)
+        to_return = sorted(to_return, key=lambda x: int(x.get('ID')))
+        return to_return
 
     # Hidden methods
 
@@ -285,6 +352,6 @@ class PaperCache:
     def _extract_keywords(text):
         text = text.lower()
         tokens = word_tokenize(text)
-        bag_of_words = [w for w in tokens if w.isalpha()]
+        bag_of_words = [w for w in tokens if w.isalpha() or "-" in w]
         bag_of_key_words = [w for w in bag_of_words if w not in stopwords.words('english')]
         return bag_of_key_words

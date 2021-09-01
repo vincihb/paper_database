@@ -178,5 +178,5 @@ if __name__ == "__main__":
         if index == 10:
             break
         index = index + 1
-    print(w.get_watercode_from_paper_id('3375'))
+    print(w.get_watercode_from_paper_id('7195'))
 

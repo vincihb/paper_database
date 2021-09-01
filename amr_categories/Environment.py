@@ -4,19 +4,21 @@ from amr_categories.Themes import Themes
 class Environment(Themes):
     def __init__(self):
         super().__init__()
-        self.keywords = "environmental contamination, environmental AMR, pollution, source of resistance," \
-                        "transmission vector, selective pressure, reservoir, resistance development, " \
-                        "antibiotic concentration, run-off, wildlife, manures, manure, ecology, " \
-                        "ecosystem, remediation, soil contamination, environmental DNA, eDNA"
-        self.prevention = "prevention, environmental education"
-        self.surveillance = "surveillance, source of resistance, run-off, " \
-                            "wildlife, ecology, ecosystem, veterinary antibiotic use"
-        self.mitigation = "mitigation, remediation"
+        self.keywords = "environmental contamination, environmental AMR, pollution, source of resistance, " \
+                        "transmission vector, selective pressure, reservoir, resistance development, antibiotic " \
+                        "concentration, manure, manures, run-off, wildlife, ecology, ecosystem, remediation, " \
+                        "soil contamination, environmental DNA, eDNA".split(", ")
+        self.surveillance = "surveillance, source of resistance, run-off, wildlife, ecology, ecosystem, veterinary " \
+                            "antibiotic use, transmission, presence, prevalence, monitoring, screening, " \
+                            "susceptibility testing, emergence, occurrence, distribution, database, databases, " \
+                            "epidemiology, detection, spread".split(", ") + \
+                            self.surveillance
+        self.mitigation = "mitigation, remediation, removal, treatment, treatments, policy, policies, regulation, " \
+                          "regulations, standard, standards, reduction, protocol, protocols, guideline, guidelines, " \
+                          "strategy, strategies, stewardship".split(", ") + self.mitigation
 
-        self.keywords = self.keywords.split(", ")
-        self.prevention = self.prevention.split(", ")
-        self.surveillance = self.surveillance.split(", ")
-        self.mitigation = self.mitigation.split(", ")
+        self.surveillance = list(dict.fromkeys(self.surveillance))
+        self.mitigation = list(dict.fromkeys(self.mitigation))
 
         self.all_papers = self.get_all_papers()
 

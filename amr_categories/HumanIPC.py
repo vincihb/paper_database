@@ -4,21 +4,17 @@ from amr_categories.Themes import Themes
 class HumanIPC(Themes):
     def __init__(self):
         super().__init__()
-        self.keywords = "human infection, infection prevention, infection control, hospital surface, " \
-                        "clinical surface, hand hygiene, hospital infection, personal protective equipment, " \
-                        "PPE, disinfection, sterilization, sanitization, hand washing, mask wearing, " \
-                        "hospital stewardship"
-        self.prevention = "prevention, personal protective equipment, PPE, disinfection, sterilization, " \
-                          "sanitization, hand washing, mask wearing, hospital stewardship"
-        self.surveillance = "surveillance, human infection, infection prevention, infection control, " \
-                            "hospital surface, clinical surface, hand hygiene, hospital infection"
-        self.mitigation = "mitigation, infection prevention, infection control, " \
-                          "hospital surface, clinical surface, hand hygiene, hospital infection"
-
-        self.keywords = self.keywords.split(", ")
-        self.prevention = self.prevention.split(", ")
-        self.surveillance = self.surveillance.split(", ")
-        self.mitigation = self.mitigation.split(", ")
+        self.keywords = "human infection, infection prevention, infection control, hospital surface, clinical " \
+                        "surface, hand hygiene, hospital infection, personal protective equipment, PPE, disinfection, " \
+                        "sterilization, sanitization, hand washing, mask wearing, hospital stewardship".split(", ")
+        self.prevention = "prevention, personal protective equipment, PPE, disinfection, sterilization, sanitization, " \
+                          "hand washing, mask wearing, prescribing practice, prescribing practices, education, " \
+                          "awareness, training".split(", ") + self.prevention
+        self.prevention = list(dict.fromkeys(self.prevention))
+        self.mitigation = "mitigation, infection control, removal, treatment, treatments, policy, policies, " \
+                          "regulation, regulations, standard, standards, reduction, protocol, protocols, guideline, " \
+                          "guidelines, strategy, strategies, stewardship".split(", ") + self.mitigation
+        self.mitigation = list(dict.fromkeys(self.mitigation))
 
         self.all_papers = self.get_all_papers()
 

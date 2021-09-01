@@ -6,21 +6,16 @@ class CleanWater(Themes):
     def __init__(self):
         super().__init__()
         self.water = Water()
-        self.keywords = "Clean water, water santitation, water supply, leach, leaching, " \
-                        "lechate, wastewater, effluent, surface water, river, lake, stream, " \
-                        "marine water, groundwater, influent, drinking water, portable water, " \
-                        "water use, water treatment, wastewater treatment, water filtration, " \
-                        "wastewater filtration, chlorination, ultraviolet, oxidation, WASH"
-        self.prevention = "prevention, water treatment, wastewater treatment, water filtration, " \
-                          "wastewater filtration, chlorination, ultraviolet, oxidation"
-        self.surveillance = "surveillance, leach, leaching, lechate, wastewater, effluent"
-        self.mitigation = "mitigation, water treatment, wastewater treatment, water filtration, " \
-                          "wastewater filtration, chlorination, ultraviolet, oxidation, WASH"
-
-        self.keywords = self.keywords.split(", ")
-        self.prevention = self.prevention.split(", ")
-        self.surveillance = self.surveillance.split(", ")
-        self.mitigation = self.mitigation.split(", ")
+        self.keywords = "Clean water, water santitation, water supply, leach, leaching, lechate, wastewater, " \
+                        "effluent, surface water, river, lake, stream, marine water, groundwater, influent, " \
+                        "drinking water, portable water, water use, water treatment, wastewater treatment, " \
+                        "water filtration, wastewater filtration, chlorination, ultraviolet, " \
+                        "oxidation, WASH".split(", ")
+        self.mitigation = "mitigation, water treatment, wastewater treatment, water filtration, wastewater " \
+                          "filtration, chlorination, ultraviolet, oxidation, removal, treatment, treatments, policy, " \
+                          "policies, regulation, regulations, standard, standards, reduction, protocol, protocols, " \
+                          "guideline, guidelines, strategy, strategies, stewardship".split(", ") + self.mitigation
+        self.mitigation = list(dict.fromkeys(self.mitigation))
 
         keywords = self.water.keywords_to_subcategories
         additional_keywords = []

@@ -4,20 +4,18 @@ from amr_categories.Themes import Themes
 class HumanConsumption(Themes):
     def __init__(self):
         super().__init__()
-        self.keywords = "consumption, antibiotic consumption, antibiotic overuse, antibiotic prescribing, " \
-                        "antibiotic use, antibiotic misuse, antibiotic access, over the counter, dosage, " \
-                        "treatment duration, daily dosage, prescribing practice, hospital stewardship, " \
-                        "prescribed, prescription, hospital, clinical, health care, healthcare, facility, " \
-                        "doctor, nurse, pharmacist"
-        self.prevention = "prevention, hospital stewardship, prescribing practice"
-        self.surveillance = "surveillance, hospital, clinical, health care, " \
-                            "healthcare, facility, doctor, nurse, pharmacist"
-        self.mitigation = "mitigation, stewardship, antibiotic access, patient education"
-
-        self.keywords = self.keywords.split(", ")
-        self.prevention = self.prevention.split(", ")
-        self.surveillance = self.surveillance.split(", ")
-        self.mitigation = self.mitigation.split(", ")
+        self.keywords = "consumption, antibiotic consumption, antibiotic overuse, antibiotic prescribing, antibiotic " \
+                        "use, antibiotic misuse, antibiotic access, over the counter, dosage, treatment duration, " \
+                        "treatment, daily dosage, prescribing practice, hospital stewardship, prescribed, " \
+                        "prescription, hospital, clinical, health care, healthcare, facility, doctor, doctors, " \
+                        "nurse, nurses, pharmacist, pharmacists, " \
+                        "patients, patient, usage of antimicrobials in humans, use of antimicrobials in " \
+                        "humans".split(", ")
+        self.surveillance = "surveillance, hospital, clinical, health care, healthcare, facility, presence, " \
+                            "prevalence, monitoring, screening, susceptibility testing, emergence, occurrence, " \
+                            "distribution, database, databases, epidemiology, detection, spread".split(", ") + \
+                            self.surveillance
+        self.surveillance = list(dict.fromkeys(self.surveillance))
 
         self.all_papers = self.get_all_papers()
 
