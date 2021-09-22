@@ -4,29 +4,29 @@ from amr_categories.Themes import Themes
 class Environment(Themes):
     def __init__(self):
         super().__init__()
-        self.keywords = "environmental contamination, environmental AMR, pollution, source of resistance, " \
-                        "transmission vector, selective pressure, reservoir, resistance development, antibiotic " \
-                        "concentration, manure, manures, run-off, wildlife, ecology, ecosystem, remediation, " \
-                        "soil contamination, environmental DNA, eDNA".split(", ")
-        self.surveillance = "surveillance, source of resistance, run-off, wildlife, ecology, ecosystem, veterinary " \
-                            "antibiotic use, transmission, presence, prevalence, monitoring, screening, " \
-                            "susceptibility testing, emergence, occurrence, distribution, database, databases, " \
-                            "epidemiology, detection, spread".split(", ") + \
-                            self.surveillance
-        self.mitigation = "mitigation, remediation, removal, treatment, treatments, policy, policies, regulation, " \
-                          "regulations, standard, standards, reduction, protocol, protocols, guideline, guidelines, " \
-                          "strategy, strategies, stewardship".split(", ") + self.mitigation
-
+        self.theme = "environment"
+        self.keywords = "environment, environmental, ecology, ecological, ecosystem, ecosystems, soil".split(", ")
+        self.keywords_and = "contamination, manure, manures, excreta, excrement, leach, leaching, " \
+                            "lechate, pollution, run-off, runoff, wildlife, remediation, DNA, eDNA".split(", ")
+        self.keywords_and = list(dict.fromkeys(self.keywords_and))
+        self.surveillance = "source of resistance, run-off, wildlife, ecology, " \
+                            "ecosystem, veterinary antibiotic use".split(", ") + self.surveillance
         self.surveillance = list(dict.fromkeys(self.surveillance))
+        self.mitigation = "remediation".split(", ") + self.mitigation
         self.mitigation = list(dict.fromkeys(self.mitigation))
-
-        self.all_papers = self.get_all_papers()
 
 
 if __name__ == "__main__":
     a = Environment()
-    papers = a.get_all_papers()
+    a.set_all_papers_primary_database()
+    papers = a.all_papers
     print(len(papers))
+    # i = 0
+    # for paper in papers:
+    #     if i == 10:
+    #         break
+    #     i = i + 1
+    #     print(paper)
     papers = a.get_papers_on_prevention()
     print(len(papers))
     papers = a.get_papers_on_surveillance()

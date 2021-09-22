@@ -4,32 +4,44 @@ from amr_categories.Themes import Themes
 class HumanConsumption(Themes):
     def __init__(self):
         super().__init__()
-        self.keywords = "consumption, antibiotic consumption, antibiotic overuse, antibiotic prescribing, antibiotic " \
-                        "use, antibiotic misuse, antibiotic access, over the counter, dosage, treatment duration, " \
-                        "treatment, daily dosage, prescribing practice, hospital stewardship, prescribed, " \
-                        "prescription, hospital, clinical, health care, healthcare, facility, doctor, doctors, " \
-                        "nurse, nurses, pharmacist, pharmacists, " \
-                        "patients, patient, usage of antimicrobials in humans, use of antimicrobials in " \
-                        "humans".split(", ")
-        self.surveillance = "surveillance, hospital, clinical, health care, healthcare, facility, presence, " \
-                            "prevalence, monitoring, screening, susceptibility testing, emergence, occurrence, " \
-                            "distribution, database, databases, epidemiology, detection, spread".split(", ") + \
-                            self.surveillance
+        self.theme = 'consumption'
+        self.keywords = "antibiotic, antimicrobial, antibacterial, antibiotics, antimicrobials, antibacterials, " \
+                        "anti-biotic, anti-microbial, anti-bacterial, multidrug resistance, multi-drug resistance, " \
+                        "pan-drug, pandrug, use, usage, consumption, prescribing, overuse, misuse, access, " \
+                        "over the counter, treatment duration, treatment, susceptibility, dosage, prescribing " \
+                        "practice, prescribed, prescription, stewardship, immunization, vaccination, vaccine, " \
+                        "vaccines, behaviour, behavior, practice, practices".split(", ")
+        self.keywords_and = "human, humans, children, infants, adult, adults, doctor, doctors, nurse, nurses, " \
+                            "dentist, dentists, pharmacist, pharmacists, patient, patients, resident, residents, " \
+                            "self-medicate, self-medication, hospital, hospitals, long-term care, clinical, clinic, " \
+                            "clinics, clinicians, health care, healthcare, facility".split(", ")
+        self.prevention = "stewardship, immunization, vaccination, vaccine, vaccines, " \
+                          "behaviour, behavior, practice, practices".split(", ") + self.prevention
+        self.prevention = list(dict.fromkeys(self.prevention))
+        self.surveillance = "hospital, hospitals, long-term care, clinical, clinic, clinics, health care, healthcare, " \
+                            "facility".split(", ") + self.surveillance
         self.surveillance = list(dict.fromkeys(self.surveillance))
-
-        self.all_papers = self.get_all_papers()
+        self.mitigation = "rotational, rotation, cycle, cycling".split(", ") + self.mitigation
+        self.mitigation = list(dict.fromkeys(self.mitigation))
 
 
 if __name__ == "__main__":
-    consumption = HumanConsumption()
-    papers = consumption.get_all_papers()
+    a = HumanConsumption()
+    a.set_all_papers_primary_database()
+    papers = a.all_papers
     print(len(papers))
-    papers = consumption.get_papers_on_prevention()
+    # i = 0
+    # for paper in papers:
+    #     if i == 10:
+    #         break
+    #     i = i + 1
+    #     print(paper)
+    papers = a.get_papers_on_prevention()
     print(len(papers))
-    papers = consumption.get_papers_on_surveillance()
+    papers = a.get_papers_on_surveillance()
     print(len(papers))
-    papers = consumption.get_papers_on_mitigation()
+    papers = a.get_papers_on_mitigation()
     print(len(papers))
-    papers = consumption.get_papers_on_innovation()
+    papers = a.get_papers_on_innovation()
     print(len(papers))
 

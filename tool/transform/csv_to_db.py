@@ -7,6 +7,7 @@ from nltk import word_tokenize
 from nltk.corpus import stopwords
 from flashgeotext.geotext import GeoText
 from multiprocessing import Process
+from amr_categories import *
 
 
 def populate_paper_cache():
@@ -195,6 +196,53 @@ def fix_doi():
             pc.update_doi(paper.get('ID'), doi[len(https_string):])
 
 
+def get_theme(pc, paper_id):
+    themes_class_dict = {'ipc': HumanIPC.HumanIPC(), 'consumption': HumanConsumption.HumanConsumption(),
+              'water': CleanWater.CleanWater(), 'environment': Environment.Environment(),
+              'food': FoodSafety.FoodSafety(), 'animals': Animals.Animals(), 'plants': Plants.Plants(),
+              'randd': RAndD.RAndD()}
+    theme_dict = {'ipc': 0, 'consumption': 0, 'water': 0, 'environment': 0, 'food': 0, 'animals': 0,
+                  'plants': 0, 'randd': 0}
+    for key in themes_class_dict.keys():
+        theme_dict.update({key: themes_class_dict.get(key).get_weighting_theme_from_paper_id(paper_id)})
+    print(theme_dict)
+    sorted_themes = list(dict(sorted(theme_dict.items(), key=lambda x: x[1], reverse=True)).keys())
+    print(sorted_themes)
+
+
+def populate_parallel(pc, paper_id, themes_class_dict):
+    theme_dict = {'ipc': 0, 'consumption': 0, 'water': 0, 'environment': 0, 'food': 0, 'animals': 0,
+                  'plants': 0, 'randd': 0}
+    for key in themes_class_dict.keys():
+        theme_dict.update({key: themes_class_dict.get(key).get_weighting_theme_from_paper_id(paper_id)})
+    sorted_themes = list(dict(sorted(theme_dict.items(), key=lambda x: x[1], reverse=True)).keys())
+    if int(paper_id) % 100 == 0:
+        print(paper_id)
+    primary_theme = sorted_themes[0]
+    secondary_theme = sorted_themes[1]
+    pc.store_theme(primary_theme, secondary_theme, paper_id)
+
+
+def populate_theme():
+    pc = PaperCache()
+    all_papers = pc.get_all_papers()
+    themes = {'ipc': HumanIPC.HumanIPC(), 'consumption': HumanConsumption.HumanConsumption(),
+              'water': CleanWater.CleanWater(), 'environment': Environment.Environment(),
+              'food': FoodSafety.FoodSafety(), 'animals': Animals.Animals(), 'plants': Plants.Plants(),
+              'randd': RAndD.RAndD()}
+    processes = []
+    index = 0
+    for paper in all_papers:
+        p = Process(target=populate_parallel, args=(pc, paper.get('ID'), themes))
+        p.start()
+        processes.append(p)
+        index = index + 1
+        if index % 50 == 0:
+            for process in processes:
+                process.join()
+            processes = []
+
+
 if __name__ == "__main__":
     # populate_paper_cache()
     # populate_keywords()
@@ -202,9 +250,23 @@ if __name__ == "__main__":
     # fix_doi()
     # populate_sector()
     # populate_country()
+    # get_theme(PaperCache(), '530')
+    # populate_theme()
+    # print("Done")
     pc = PaperCache()
-    papers = pc.get_paper_from_paper_doi('10.1093/jac/dkt024')
-    print(papers)
-    papers = pc.get_papers_from_country('Canada')
-    for paper in papers:
-        print(paper)
+    # get_theme(pc, '700')
+    # print(pc.get_paper_from_paper_id('700'))
+
+    themes = {'ipc': 0, 'consumption': 0, 'water': 0, 'environment': 0, 'food': 0,
+              'animals': 0, 'plants': 0, 'randd': 0}
+    themes = list(themes.keys())
+    for theme in themes:
+        print("=======")
+        print(theme)
+        papers = pc.get_papers_from_primary_theme(theme)
+        print(len(papers))
+        papers = pc.get_papers_from_secondary_theme(theme)
+        print(len(papers))
+    # papers = pc.get_papers_from_country('Canada')
+    # for paper in papers:
+    #     print(paper)

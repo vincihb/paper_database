@@ -10,7 +10,7 @@ from data.PaperCache import PaperCache
 import matplotlib.pyplot as plt
 
 
-years = [year for year in range(1980, 2021)]
+years = [year for year in range(1985, 2021)]
 animal = []
 cleanwater = []
 environment = []
@@ -20,30 +20,38 @@ human_ipc = []
 plants = []
 rd = []
 pc = PaperCache()
-
+print(pc.get_all_journals())
 
 a = Animals()
+a.set_all_papers_primary_database()
 papers = a.all_papers
 total_papers = papers
 b = CleanWater()
+b.set_all_papers_primary_database()
 papers = b.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 c = Environment()
+c.set_all_papers_primary_database()
 papers = c.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 d = FoodSafety()
+d.set_all_papers_primary_database()
 papers = d.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 e = HumanConsumption()
+e.set_all_papers_primary_database()
 papers = e.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 f = HumanIPC()
+f.set_all_papers_primary_database()
 papers = f.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 g = Plants()
+g.set_all_papers_primary_database()
 papers = g.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 h = RAndD()
+h.set_all_papers_primary_database()
 papers = h.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 

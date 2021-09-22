@@ -13,7 +13,7 @@ class LMIC(Countries):
                                 "Micronesia, Ukraine, Republic of Congo, Mongolia, Uzbekistan, " \
                                 "Cote d'Ivoire, Ivory Coast, Morocco, Vanuatu, Djibouti, Myanmar, Vietnam, " \
                                 "Egypt, Nepal, West Bank and Gaza, El Salvador, Nicaragua, Zambia, " \
-                                "Eswatini, Nigeria, Zimbabwe, Ghana, Pakistan, Haiti, Papua New Guinea"
+                                "Eswatini, Swaziland, Nigeria, Zimbabwe, Ghana, Pakistan, Haiti, Papua New Guinea"
         self.lst_of_countries = self.lst_of_countries.split(", ")
 
 

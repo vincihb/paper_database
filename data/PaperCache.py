@@ -28,13 +28,17 @@ class PaperCache:
         sql = 'INSERT INTO `COUNTRY` (COUNTRY_NAME, PAPER_ID) VALUES (?, ?)'
         self.db.exec_insert(sql, (country, paper_id))
 
+    def store_theme(self, primary_theme, secondary_theme, paper_id):
+        sql = 'INSERT INTO `THEME` (PRIMARY_THEME, SECONDARY_THEME, PAPER_ID) VALUES (?, ?, ?)'
+        self.db.exec_insert(sql, (primary_theme, secondary_theme, paper_id))
+
     # Fixing the DOI
 
     def update_doi(self, paper_id, doi):
         sql = 'UPDATE `PAPERS` SET DOI=? WHERE ID=?'
         self.db.exec_update(sql, (doi, paper_id))
 
-    # Get a list of all the papers and keywords 
+    # Get a list of all the papers
 
     def get_all_papers(self):
         sql = 'SELECT * FROM `PAPERS`'
@@ -51,7 +55,28 @@ class PaperCache:
         result = self.db.exec_select(sql).fetchall()
         return sorted(result, key=lambda x: int(x.get('PAPER_ID')))
 
-    # Sector and country getters
+    def get_all_journals(self):
+        papers = self.get_all_papers()
+        journals = {}
+        for paper in papers:
+            if journals.get(paper.get('JOURNAL')) is None:
+                journals.update({paper.get('JOURNAL'): 1})
+            else:
+                journals.update({paper.get('JOURNAL'): journals.get(paper.get('JOURNAL')) + 1})
+        return dict(sorted(journals.items(), key=lambda x: x[1], reverse=True))
+
+    # Sector, theme, and country getters
+    def get_papers_from_primary_theme(self, theme):
+        sql = 'SELECT * FROM `THEME` INNER JOIN `PAPERS` ON `THEME`.PAPER_ID=`PAPERS`.ID WHERE PRIMARY_THEME=?'
+        result = self.db.exec_select(sql, (theme,)).fetchall()
+        # return sorted(result, key=lambda x: int(x.get('ID')))
+        return result
+
+    def get_papers_from_secondary_theme(self, theme):
+        sql = 'SELECT * FROM `THEME` INNER JOIN `PAPERS` ON `THEME`.PAPER_ID=`PAPERS`.ID WHERE SECONDARY_THEME=?'
+        result = self.db.exec_select(sql, (theme,)).fetchall()
+        # return sorted(result, key=lambda x: int(x.get('ID')))
+        return result
 
     def get_papers_from_sector(self, sector):
         sql = 'SELECT * FROM `SECTORS` INNER JOIN `PAPERS` ON `SECTORS`.PAPER_ID=`PAPERS`.ID WHERE SECTOR=?'
@@ -223,6 +248,15 @@ class PaperCache:
         return to_return
 
     @staticmethod
+    def get_papers_and_themes(papers_1, papers_2):
+        to_return = []
+        for paper_1 in papers_1:
+            for paper_2 in papers_2:
+                if paper_1.get("ID") == paper_2.get("ID"):
+                    to_return.append(paper_1)
+        return to_return
+
+    @staticmethod
     def get_papers_and_countries(papers_1, papers_2):
         to_return = []
         for paper_1 in papers_1:
@@ -278,7 +312,7 @@ class PaperCache:
                     in_common_papers = True
             if not in_common_papers:
                 to_return.append(paper_2)
-        to_return = sorted(to_return, key=lambda x: x.get('WEIGHT'), reverse=True)
+        # to_return = sorted(to_return, key=lambda x: x.get('WEIGHT'), reverse=True)
         return to_return
 
     def get_papers_or_countries(self, papers_1, papers_2):
