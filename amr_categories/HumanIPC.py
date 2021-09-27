@@ -9,6 +9,9 @@ class HumanIPC(Themes):
                         "protective equipment, PPE, disinfection, sterilization, sanitization, hand washing, " \
                         "mask wearing".split(", ")
         self.keywords_and = "human, humans, clinical, clinic, clinics, hospital, hospitals".split(", ")
+        self.theme_keywords = "infection, infection prevention, infection control,  surface, hand hygiene, personal " \
+                              "protective equipment, PPE, disinfection, sterilization, sanitization, hand washing, " \
+                              "mask wearing, human, humans, clinical, clinic, clinics, hospital, hospitals ".split(", ")
         self.prevention = "personal protective equipment, PPE, disinfection, sterilization, sanitization, " \
                           "hand washing, mask wearing, hospital surface, clinical surface".split(", ") + self.prevention
         self.prevention = list(dict.fromkeys(self.prevention))

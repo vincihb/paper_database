@@ -249,12 +249,27 @@ class PaperCache:
 
     @staticmethod
     def get_papers_and_themes(papers_1, papers_2):
+        papers_1 = sorted(papers_1, key=lambda x: int(x.get('ID')), reverse=True)
+        papers_2 = sorted(papers_2, key=lambda x: int(x.get('ID')), reverse=True)
         to_return = []
-        for paper_1 in papers_1:
-            for paper_2 in papers_2:
-                if paper_1.get("ID") == paper_2.get("ID"):
-                    to_return.append(paper_1)
+        index_1 = 0
+        index_2 = 0
+        while index_1 < len(papers_1) and index_2 < len(papers_2):
+            paper_1 = papers_1[index_1]
+            paper_2 = papers_2[index_2]
+            if paper_1.get('ID') == paper_2.get('ID'):
+                to_return.append(paper_1)
+            elif paper_1.get('ID') < paper_2.get('ID'):
+                index_1 = index_1 + 1
+            else:
+                index_2 = index_2 + 1
         return to_return
+        # to_return = []
+        # for paper_1 in papers_1:
+        #     for paper_2 in papers_2:
+        #         if paper_1.get("ID") == paper_2.get("ID"):
+        #             to_return.append(paper_1)
+        # return to_return
 
     @staticmethod
     def get_papers_and_countries(papers_1, papers_2):

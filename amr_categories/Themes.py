@@ -8,6 +8,7 @@ class Themes:
         self.theme = ""
         self.keywords = [""]
         self.keywords_and = [""]
+        self.theme_keywords = [""]
         self.prevention = "prevention, prescribing practice, prescribing practices, education, awareness, training".split(
             ", ")
         self.surveillance = "surveillance, transmission, presence, prevalence, monitoring, screening, scoping, " \
@@ -91,7 +92,7 @@ class Themes:
         return to_return
 
     def _get_histogram(self, keywords):
-        theme_keywords = self.keywords_and  # + self.keywords
+        theme_keywords = self.theme_keywords
         theme_keywords = list(dict.fromkeys(theme_keywords))
         dict_of_theme = {key: 0 for key in theme_keywords}
         for keyword in keywords:

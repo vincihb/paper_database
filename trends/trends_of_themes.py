@@ -10,7 +10,7 @@ from data.PaperCache import PaperCache
 import matplotlib.pyplot as plt
 
 
-years = [year for year in range(1985, 2021)]
+years = [year for year in range(1990, 2021)]
 animal = []
 cleanwater = []
 environment = []
