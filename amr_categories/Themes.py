@@ -1,16 +1,24 @@
 from data.PaperCache import PaperCache
+from nltk.stem import PorterStemmer
+
+
+def remove_repeats(lst):
+    return list(dict.fromkeys(lst))
 
 
 class Themes:
     def __init__(self, all_papers=None):
+        self.ps = PorterStemmer()
         self.pc = PaperCache()
         self.database = False
         self.theme = ""
         self.keywords = [""]
         self.keywords_and = [""]
         self.theme_keywords = [""]
-        self.prevention = "prevention, prescribing practice, prescribing practices, education, awareness, training".split(
-            ", ")
+        self.general_keywords = [""]
+        self.theme_keywords_not = [""]
+        self.prevention = "prevention, prescribing practice, prescribing practices, education, " \
+                          "awareness, training".split(", ")
         self.surveillance = "surveillance, transmission, presence, prevalence, monitoring, screening, scoping, " \
                             "susceptibility, testing, emergence, occurrence, distribution, " \
                             "database, databases, epidemiology, " \
@@ -36,6 +44,12 @@ class Themes:
     def set_all_papers_secondary_database(self):
         self.database = True
         self.all_papers = self.pc.get_papers_from_secondary_theme(self.theme)
+
+    def set_theme_keywords(self, keywords):
+        self.keywords = [k for k in keywords if k not in self.theme_keywords_not]
+
+    def set_general_keywords(self, keywords):
+        self.general_keywords = [k for k in keywords if k not in self.theme_keywords_not]
 
     def get_papers_by_year(self, year):
         to_return = []
@@ -92,18 +106,48 @@ class Themes:
         return to_return
 
     def _get_histogram(self, keywords):
-        theme_keywords = self.theme_keywords
-        theme_keywords = list(dict.fromkeys(theme_keywords))
+        theme_keywords = remove_repeats([self.ps.stem(a) for a in self.theme_keywords])
+        theme_keywords_not = remove_repeats([self.ps.stem(a) for a in self.theme_keywords_not])
+        general_keywords = remove_repeats([self.ps.stem(a) for a in self.general_keywords])
         dict_of_theme = {key: 0 for key in theme_keywords}
+        dict_of_theme_not = {key: 0 for key in theme_keywords_not}
+        dict_of_general = {key: 0 for key in general_keywords}
+
         for keyword in keywords:
-            k = keyword.get('KEYWORD')
+            k = self.ps.stem(keyword.get('KEYWORD'))
             if k in theme_keywords:
-                dict_of_theme.update({k: keyword.get('WEIGHT') + dict_of_theme.get(k)})
+                dict_of_theme.update({k: keyword.get('WEIGHT') * 1 + dict_of_theme.get(k)})
+        # if sum(dict_of_theme.values()) == 0:
+        #     dict_of_theme.update(dict_of_theme_not)
+        #     dict_of_theme.update(dict_of_general)
+        #     return dict_of_theme
+        # for keyword in keywords:
+        #     k = self.ps.stem(keyword.get('KEYWORD'))
+        #     if k in general_keywords:
+        #         dict_of_general.update({k: keyword.get('WEIGHT')*1 + dict_of_general.get(k)})
+        # if sum(dict_of_general.values()) == 0:
+        #     dict_of_theme = {k: 0 for k in self.theme_keywords}
+        #     dict_of_theme.update(dict_of_theme_not)
+        #     dict_of_theme.update(dict_of_general)
+        #     return dict_of_theme
+        for keyword in keywords:
+            k = self.ps.stem(keyword.get('KEYWORD'))
+            if k in theme_keywords_not:
+                dict_of_theme_not.update({k: keyword.get('WEIGHT') * -1 + dict_of_theme_not.get(k)})
+        # print(self.theme)
+        # print(dict_of_theme)
+        # print("=======")
+        dict_of_theme.update(dict_of_theme_not)
+        dict_of_theme.update(dict_of_general)
         return dict_of_theme
 
     def _get_papers_on_subject(self, subject):
+        to_return = []
         papers_1 = self.all_papers
-        papers_2 = self.pc.get_papers_from_list_of_keywords_or(subject)
-        if self.database:
-            return self.pc.get_papers_and_themes(papers_2, papers_1)
-        return self.pc.get_papers_and(papers_2, papers_1)
+        for paper in papers_1:
+            keywords = [k.get('KEYWORD') for k in self.pc.get_keywords_from_paper_id(paper.get('ID'))]
+            for keyword in subject:
+                if keyword in keywords:
+                    to_return.append(paper)
+                    break
+        return to_return

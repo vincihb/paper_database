@@ -5,13 +5,20 @@ class HumanIPC(Themes):
     def __init__(self):
         super().__init__()
         self.theme = "ipc"
-        self.keywords = "infection, infection prevention, infection control,  surface, hand hygiene, personal " \
+        self.keywords = "infection, prevention, control, surface, hygiene, personal " \
                         "protective equipment, PPE, disinfection, sterilization, sanitization, hand washing, " \
                         "mask wearing".split(", ")
         self.keywords_and = "human, humans, clinical, clinic, clinics, hospital, hospitals".split(", ")
-        self.theme_keywords = "infection, infection prevention, infection control,  surface, hand hygiene, personal " \
-                              "protective equipment, PPE, disinfection, sterilization, sanitization, hand washing, " \
-                              "mask wearing, human, humans, clinical, clinic, clinics, hospital, hospitals ".split(", ")
+        self.theme_keywords = "infection, prevention, control, personal, protective, equipment, PPE, disinfection, " \
+                              "sterilization, sanitization, washing, mask, " \
+                              "human, children, infant, adult, student, doctor, nurse, dentist, pharmacist, " \
+                              "patient, resident, hospital, long-term, clinic, clinician, health-care, healthcare, " \
+                              "health, facility, surface, hygiene".split(", ")
+        self.theme_keywords_not = "use, usage, consumption, consume, prescribe, overuse, misuse, access, dosage, " \
+                                  "practice, prescription, stewardship, immunization, vaccine, behaviour, behavior, " \
+                                  "supply, safety, security, production, supply, chain, handling, processing, " \
+                                  "slaughter, butcher, butchery, packaging, import, export, retail, street, grocery, " \
+                                  "food, foodborne, food-borne".split(", ")
         self.prevention = "personal protective equipment, PPE, disinfection, sterilization, sanitization, " \
                           "hand washing, mask wearing, hospital surface, clinical surface".split(", ") + self.prevention
         self.prevention = list(dict.fromkeys(self.prevention))
@@ -38,5 +45,3 @@ if __name__ == "__main__":
     print(len(papers))
     papers = a.get_papers_on_innovation()
     print(len(papers))
-
-

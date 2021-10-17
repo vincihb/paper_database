@@ -1,5 +1,6 @@
-from sqlite3 import OperationalError, IntegrityError
+from sqlite3 import IntegrityError
 import time
+import random
 from data.PaperCache import PaperCache
 from os import path
 import csv
@@ -220,7 +221,13 @@ def populate_parallel(pc, paper_id, themes_class_dict):
         print(paper_id)
     primary_theme = sorted_themes[0]
     secondary_theme = sorted_themes[1]
-    pc.store_theme(primary_theme, secondary_theme, paper_id)
+    try:
+        pc.store_theme(primary_theme, secondary_theme, paper_id)
+    except IntegrityError:
+        print("nm")
+        print(paper_id)
+        print(primary_theme)
+        print(secondary_theme)
 
 
 def populate_theme():
@@ -232,14 +239,31 @@ def populate_theme():
               'randd': RAndD.RAndD()}
     processes = []
     index = 0
+    process_num = 30
+    prev_time = [1000000]
+    start_time = time.time()
     for paper in all_papers:
+        # print(paper.get('ID'))
+        # print('/////')
+        # populate_parallel(pc, paper.get('ID'), themes)
+        if pc.get_paper_theme(paper.get('ID')):
+            continue
         p = Process(target=populate_parallel, args=(pc, paper.get('ID'), themes))
         p.start()
         processes.append(p)
         index = index + 1
-        if index % 50 == 0:
+        if index % process_num == 0:
+            index = 0
             for process in processes:
                 process.join()
+            elapsed_time = time.time() - start_time
+            if float(elapsed_time)/float(process_num) <= min(prev_time) or random.randrange(0, 2) == 1:
+                process_num += 1
+            else:
+                process_num -= 1
+            prev_time = [min(prev_time), float(elapsed_time) / float(process_num)]
+            start_time = time.time()
+            print(process_num)
             processes = []
 
 

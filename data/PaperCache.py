@@ -38,6 +38,10 @@ class PaperCache:
         sql = 'UPDATE `PAPERS` SET DOI=? WHERE ID=?'
         self.db.exec_update(sql, (doi, paper_id))
 
+    def update_theme(self, paper_id, primary_theme, secondary_theme):
+        sql = 'UPDATE `THEME` SET PRIMARY_THEME=?, SECONDARY_THEME=? WHERE PAPER_ID=?'
+        self.db.exec_update(sql, (primary_theme, secondary_theme, paper_id))
+
     # Get a list of all the papers
 
     def get_all_papers(self):
@@ -66,6 +70,11 @@ class PaperCache:
         return dict(sorted(journals.items(), key=lambda x: x[1], reverse=True))
 
     # Sector, theme, and country getters
+    def get_paper_theme(self, paper_id):
+        sql = 'SELECT * FROM `THEME` WHERE PAPER_ID=?'
+        result = self.db.exec_select(sql, (paper_id,)).fetchall()
+        return result
+
     def get_papers_from_primary_theme(self, theme):
         sql = 'SELECT * FROM `THEME` INNER JOIN `PAPERS` ON `THEME`.PAPER_ID=`PAPERS`.ID WHERE PRIMARY_THEME=?'
         result = self.db.exec_select(sql, (theme,)).fetchall()

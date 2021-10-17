@@ -15,6 +15,22 @@ class HumanConsumption(Themes):
                             "dentist, dentists, pharmacist, pharmacists, patient, patients, resident, residents, " \
                             "self-medicate, self-medication, hospital, hospitals, long-term care, clinical, clinic, " \
                             "clinics, clinicians, health care, healthcare, facility".split(", ")
+        self.theme_keywords = "use, usage, consumption, consume, prescribe, overuse, misuse, treatment, dosage, " \
+                              "access, dosage, practice, prescription, stewardship, immunization, vaccine, behaviour," \
+                              " behavior, human, children, infant, adult, " \
+                              "student, doctor, nurse, dentist, pharmacist, " \
+                              "patient, resident, hospital, long-term, clinic, clinician, health-care, healthcare, " \
+                              "health, facility".split(", ")
+        self.theme_keywords_not = "infection, prevention, control, personal, protective, equipment, PPE, " \
+                                  "disinfection, sterilization, sanitization, washing, mask, probiotic, farm, " \
+                                  "aquaculture, husbandry, veterinary, zoonotics, zoonoses, zoonosis, CAFO, " \
+                                  "concentrated, feeding, operation, confined, manure, excreta, excrement, animal, " \
+                                  "livestock, poultry, bird, rabbit, pig, cow, pork, beef, bovine, ovine, lamb, " \
+                                  "dairy, mutton, fish, seafood, chicken, piglet, shrimp, oyster, pet, companion, " \
+                                  "canine, feline, feces, pesticide, herbicide, fungicide, biocide, fertilizer, " \
+                                  "manure, farm, agriculture, agricultural, aquaculture, pond, tank, nursery, " \
+                                  "horticulture, harvest, plant, fruit, vegetable, crop, leaf, leaves, legume, root, " \
+                                  "produce, seaweed, kelp, algae".split(", ")
         self.prevention = "stewardship, immunization, vaccination, vaccine, vaccines, " \
                           "behaviour, behavior, practice, practices".split(", ") + self.prevention
         self.prevention = list(dict.fromkeys(self.prevention))
@@ -44,4 +60,3 @@ if __name__ == "__main__":
     print(len(papers))
     papers = a.get_papers_on_innovation()
     print(len(papers))
-
