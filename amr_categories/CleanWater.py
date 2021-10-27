@@ -1,4 +1,5 @@
 from amr_categories.Themes import Themes
+import random
 
 
 class CleanWater(Themes):
@@ -22,13 +23,13 @@ class CleanWater(Themes):
         #         additional_keywords = additional_keywords + keywords.get(key)
         # self.keywords = self.keywords + additional_keywords
         # self.keywords = list(dict.fromkeys(self.keywords))
-        self.theme_keywords = "transmission, clean, santitation, supply, environment, source, karst, surface, river, " \
-                              "lake, stream, marine, ground, influent, drinking, potable, treatment, removal, " \
-                              "filtration, chlorination, ultraviolet, oxidation, water, wastewater, sewage, effluent, " \
-                              "landfill, aquifer, contamination, manure, excrement, " \
-                              "excreta, excrement, leach, lechate, pollution, run-off, runoff, sewage".split(", ")
-        self.theme_keywords_not = "wildlife, remediation, removal, DNA, eDNA, environment, " \
-                                  "ecology, ecosystem, soil".split(", ")
+        self.theme_keywords = "karst, river, lake, stream, marine, ground, influent, drinking, potable, water, " \
+                              "wastewater, waste, sewage, effluent, landfill, aquifer".split(", ")
+        self.general_keywords = "contamination, manure, excrement, excreta, excrement, leach, leachate, pollution, " \
+                                "run-off, runoff, feces, treatment, removal, filtration, chlorination, ultraviolet, " \
+                                "irradiation, oxidation, transmission, clean, sanitation, supply, environment, " \
+                                "source, surface, reservoir".split(", ")
+        self.theme_keywords_not = "wildlife, eDNA, environment, ecology, ecosystem, soil".split(", ")
 
 
 if __name__ == "__main__":
@@ -36,12 +37,12 @@ if __name__ == "__main__":
     a.set_all_papers_primary_database()
     papers = a.all_papers
     print(len(papers))
-    # i = 0
-    # for paper in papers:
-    #     if i == 10:
-    #         break
-    #     i = i + 1
-    #     print(paper)
+    # # i = 0
+    # # for paper in papers:
+    # #     if i == 10:
+    # #         break
+    # #     i = i + 1
+    # #     print(paper)
     papers = a.get_papers_on_prevention()
     print(len(papers))
     papers = a.get_papers_on_surveillance()

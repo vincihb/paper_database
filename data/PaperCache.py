@@ -117,6 +117,11 @@ class PaperCache:
         result = self.db.exec_select(sql, (paper_id,)).fetchall()
         return sorted(result, key=lambda x: x.get("WEIGHT"), reverse=True)
 
+    def get_countries_from_paper_id(self, paper_id):
+        sql = 'SELECT * FROM `COUNTRY` WHERE PAPER_ID=?'
+        result = self.db.exec_select(sql, (paper_id,)).fetchall()
+        return result
+
     # Easy way of searching papers
 
     def get_paper_from_paper_id(self, paper_id):
@@ -258,8 +263,8 @@ class PaperCache:
 
     @staticmethod
     def get_papers_and_themes(papers_1, papers_2):
-        papers_1 = sorted(papers_1, key=lambda x: int(x.get('ID')), reverse=True)
-        papers_2 = sorted(papers_2, key=lambda x: int(x.get('ID')), reverse=True)
+        papers_1 = sorted(papers_1, key=lambda x: int(x.get('ID')))
+        papers_2 = sorted(papers_2, key=lambda x: int(x.get('ID')))
         to_return = []
         index_1 = 0
         index_2 = 0
@@ -268,7 +273,9 @@ class PaperCache:
             paper_2 = papers_2[index_2]
             if paper_1.get('ID') == paper_2.get('ID'):
                 to_return.append(paper_1)
-            elif paper_1.get('ID') < paper_2.get('ID'):
+                index_1 = index_1 + 1
+                index_2 = index_2 + 1
+            elif int(paper_1.get('ID')) < int(paper_2.get('ID')):
                 index_1 = index_1 + 1
             else:
                 index_2 = index_2 + 1

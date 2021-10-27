@@ -6,7 +6,7 @@ from nltk.corpus import stopwords
 class Water:
     def __init__(self):
         self.pc = PaperCache()
-        self._water_codes = ['green', 'blue', 'wastewater']
+        self._water_codes = ['green', 'blue', 'brown']
         self._subcategories = {}
         self._keywords_to_subcategories = {}
         self._populate_subcategories()
@@ -15,11 +15,12 @@ class Water:
         index = 0
         for water_codes in self._water_codes:
             if index == 0:
-                list_of_sub = ["Surface Water", "Groundwater", "Karst Groundwater", "Stormwater"]
+                list_of_sub = ["Surface Water", "Marine Water", "Groundwater", "Karst Groundwater"]
             elif index == 1:
-                list_of_sub = ["Residential Use", "Industrial Use"]
+                list_of_sub = ["Municipal", "Well", "Self-supplied"]
             else:
-                list_of_sub = ["Agricultural", "Industrial", "Municipal/Residential", "Pharm. Waste"]
+                list_of_sub = ["Agricultural", "Industrial", "Municipal", "Pharmaceutical",
+                               "Stormwater", "Hospital"]
             self._subcategories.update({water_codes: list_of_sub})
             index = index + 1
 
@@ -27,29 +28,41 @@ class Water:
         for list_of_sub in self._subcategories.values():
             for subcat in list_of_sub:
                 if index == 0:
-                    keywords = ["surface", "water", "river", "lake", "stream"]
+                    keywords = "surface water, river, lake, stream, tributary, creek".split(", ")
                 elif index == 1:
-                    keywords = ["ground", "watertable", "artesian", "aquifer", "aquifers"]
+                    keywords = "sea, ocean, saline, estuary, brackish, salt".split(", ")
                 elif index == 2:
-                    keywords = ["karst", "karst aquifer", " karst groundwater",
-                                "ground", "water", "limestone", "carbonate", "dissolution-type landscape"]
+                    keywords = "aquifer, groundwater, confined aquifer, " \
+                               "unconfined aquifer, granular aquifers, alluvial aquifers".split(", ")
                 elif index == 3:
-                    keywords = ["surface runoff",
-                                "urban runoff", "industrial runoff", "agriculture runoff", "nonpoint source water",
-                                "precipitation", "rainfall", "drainage feature", "class V injection well"]
+                    keywords = "Karst, karst aquifer, karst groundwater, " \
+                               "limestone, carbonate, dissolution-type landscape".split(", ")
                 elif index == 4:
-                    keywords = ["residential", "household", "drinking water"]
+                    keywords = "household, drinking water, human use, " \
+                               "treatment system, distribution system, regulated source".split(", ")
                 elif index == 5:
-                    keywords = ["industrial", "municipal water"]
+                    keywords = "well water, private well, self-regulated".split(", ")
                 elif index == 6:
-                    keywords = ["agricultural", "irrigation", "crop", "animal waste", "livestock",
-                                "animal", "wastewater"]
+                    keywords = "glacier melt, fog harvesting, rainwater harvesting, " \
+                               "cistern, untreated river water".split(", ")
                 elif index == 7:
-                    keywords = ["industrial waste", "heavy metals"]
+                    keywords = "irrigation run off, animal waste, " \
+                               "manure runoff, feed by-product, pesticides, herbicides, " \
+                               "insecticides, nutrient runoff".split(", ")
                 elif index == 8:
-                    keywords = ["municipal", "residential", "wastewater", "sewage"]
+                    keywords = "industrial waste, heavy metals, high dissolved solids, " \
+                               "organic compounds, toxic, energy production".split(", ")
+                elif index == 9:
+                    keywords = "wastewater, sewage, wastewater treatment plant, household, " \
+                               "human waste, primary treatment, secondary treatment, tertiary treatment".split(", ")
+                elif index == 10:
+                    keywords = "drug development, antibiotic byproduct".split(", ")
+                elif index == 11:
+                    keywords = "surface runoff, urban runoff, industrial runoff, agriculture runoff, " \
+                               "nonpoint source water, precipitation/rainfall, " \
+                               "drainage feature, class V injection well".split(", ")
                 else:
-                    keywords = ["pharmaceutical", "laboratory", "drug development"]
+                    keywords = "clinical waste, clinical antibiotics, clinical viruses".split(", ")
                 self._keywords_to_subcategories.update({subcat: keywords})
                 index = index + 1
 
@@ -63,7 +76,8 @@ class Water:
         for subcat in subcategories:
             to_input = to_input + self._keywords_to_subcategories.get(subcat)
         to_input = list(dict.fromkeys(to_input))
-        return self.pc.get_papers_from_list_of_keywords_or(to_input)
+        return self.pc.get_papers_and_themes(self.pc.get_papers_from_list_of_keywords_or(to_input),
+                                             self.pc.get_papers_from_primary_theme('water'))
 
     def get_watercode_from_paper(self, paper):
         dict_to_return = self.get_subcategory_from_paper(paper)
@@ -172,11 +186,14 @@ if __name__ == "__main__":
     print(w.keywords_to_subcategories)
     papers = w.get_papers_from_watercode('green')
     print(len(papers))
-    index = 0
-    for paper in papers:
-        print(paper)
-        if index == 10:
-            break
-        index = index + 1
-    print(w.get_watercode_from_paper_id('7195'))
-
+    papers = w.get_papers_from_watercode('blue')
+    print(len(papers))
+    papers = w.get_papers_from_watercode('brown')
+    print(len(papers))
+    # index = 0
+    # for paper in papers:
+    #     print(paper)
+    #     if index == 10:
+    #         break
+    #     index = index + 1
+    # print(w.get_watercode_from_paper_id('7195'))

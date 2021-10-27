@@ -13,9 +13,11 @@ class FoodSafety(Themes):
         self.prevention = list(dict.fromkeys(self.prevention))
         self.mitigation = "sanitization, pasteurization".split(", ") + self.mitigation
         self.mitigation = list(dict.fromkeys(self.mitigation))
-        self.theme_keywords = "supply, safety, security, production, supply, chain, handling, processing, slaughter, " \
-                              "butcher, butchery, packaging, import, export, retail, street, grocery, food, " \
-                              "foodborne, food-borne, contamination, surface, hygiene".split(", ")
+        self.theme_keywords = "slaughter, butcher, butchery, packaging, retail, street, grocery, food, foodborne, " \
+                              "food-borne, pork, beef, dairy, mutton, meat, seafood, shops, store, market, " \
+                              "food-producing, slaughterhouse".split(", ")
+        self.general_keywords = "contamination, surface, hygiene, animal, chickens, farm, consumption, supply, " \
+                                "safety, security, production, chain, handling, processing, import, export".split(", ")
         # self.theme_keywords_not = "infection, prevention, control, personal, protective, equipment, PPE, " \
         #                           "disinfection, sterilization, sanitization, washing, mask".split(", ")
 

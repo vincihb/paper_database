@@ -220,7 +220,12 @@ def populate_parallel(pc, paper_id, themes_class_dict):
     if int(paper_id) % 100 == 0:
         print(paper_id)
     primary_theme = sorted_themes[0]
-    secondary_theme = sorted_themes[1]
+    if theme_dict.get(sorted_themes[1]) == theme_dict.get(sorted_themes[2]):
+        secondary_theme = 'None'
+    else:
+        secondary_theme = sorted_themes[1]
+    # print(theme_dict)
+    # print(sorted_themes)
     try:
         pc.store_theme(primary_theme, secondary_theme, paper_id)
     except IntegrityError:
@@ -239,12 +244,13 @@ def populate_theme():
               'randd': RAndD.RAndD()}
     processes = []
     index = 0
-    process_num = 30
+    process_num = 45
     prev_time = [1000000]
     start_time = time.time()
     for paper in all_papers:
         # print(paper.get('ID'))
-        # print('/////')
+        # print(paper.get('TITLE'))
+        # print(paper.get("ABSTRACT"))
         # populate_parallel(pc, paper.get('ID'), themes)
         if pc.get_paper_theme(paper.get('ID')):
             continue
@@ -275,7 +281,7 @@ if __name__ == "__main__":
     # populate_sector()
     # populate_country()
     # get_theme(PaperCache(), '530')
-    # populate_theme()
+    populate_theme()
     # print("Done")
     pc = PaperCache()
     # get_theme(pc, '700')

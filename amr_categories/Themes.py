@@ -107,7 +107,8 @@ class Themes:
 
     def _get_histogram(self, keywords):
         theme_keywords = remove_repeats([self.ps.stem(a) for a in self.theme_keywords])
-        theme_keywords_not = remove_repeats([self.ps.stem(a) for a in self.theme_keywords_not])
+        theme_keywords_not = remove_repeats([self.ps.stem(a) for a in self.theme_keywords_not
+                                             if (a not in self.general_keywords and a not in self.theme_keywords)])
         general_keywords = remove_repeats([self.ps.stem(a) for a in self.general_keywords])
         dict_of_theme = {key: 0 for key in theme_keywords}
         dict_of_theme_not = {key: 0 for key in theme_keywords_not}
@@ -117,14 +118,15 @@ class Themes:
             k = self.ps.stem(keyword.get('KEYWORD'))
             if k in theme_keywords:
                 dict_of_theme.update({k: keyword.get('WEIGHT') * 1 + dict_of_theme.get(k)})
-        # if sum(dict_of_theme.values()) == 0:
-        #     dict_of_theme.update(dict_of_theme_not)
-        #     dict_of_theme.update(dict_of_general)
-        #     return dict_of_theme
-        # for keyword in keywords:
-        #     k = self.ps.stem(keyword.get('KEYWORD'))
-        #     if k in general_keywords:
-        #         dict_of_general.update({k: keyword.get('WEIGHT')*1 + dict_of_general.get(k)})
+        if sum(dict_of_theme.values()) == 0:
+            dict_of_theme.update(dict_of_theme_not)
+            dict_of_theme.update(dict_of_general)
+            return dict_of_theme
+        for keyword in keywords:
+            k = self.ps.stem(keyword.get('KEYWORD'))
+            if k in general_keywords:
+                dict_of_general.update({k: keyword.get('WEIGHT') * 1 + dict_of_general.get(k)})
+                # dict_of_general.update({k: 1})
         # if sum(dict_of_general.values()) == 0:
         #     dict_of_theme = {k: 0 for k in self.theme_keywords}
         #     dict_of_theme.update(dict_of_theme_not)
@@ -134,19 +136,28 @@ class Themes:
             k = self.ps.stem(keyword.get('KEYWORD'))
             if k in theme_keywords_not:
                 dict_of_theme_not.update({k: keyword.get('WEIGHT') * -1 + dict_of_theme_not.get(k)})
+                # dict_of_theme_not.update({k: -1})
         # print(self.theme)
         # print(dict_of_theme)
+        # print(dict_of_general)
+        # print(dict_of_theme_not)
         # print("=======")
         dict_of_theme.update(dict_of_theme_not)
         dict_of_theme.update(dict_of_general)
         return dict_of_theme
 
     def _get_papers_on_subject(self, subject):
+        s = remove_repeats([self.ps.stem(a) for a in subject])
         to_return = []
         papers_1 = self.all_papers
         for paper in papers_1:
-            keywords = [k.get('KEYWORD') for k in self.pc.get_keywords_from_paper_id(paper.get('ID'))]
-            for keyword in subject:
+            if subject == self.surveillance:
+                if self.pc.get_countries_from_paper_id(paper.get('ID')):
+                    to_return.append(paper)
+                    continue
+            keywords = remove_repeats([self.ps.stem(k.get('KEYWORD'))
+                                       for k in self.pc.get_keywords_from_paper_id(paper.get('ID'))])
+            for keyword in s:
                 if keyword in keywords:
                     to_return.append(paper)
                     break

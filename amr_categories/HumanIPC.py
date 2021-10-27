@@ -1,4 +1,5 @@
 from amr_categories.Themes import Themes
+import random
 
 
 class HumanIPC(Themes):
@@ -10,15 +11,16 @@ class HumanIPC(Themes):
                         "mask wearing".split(", ")
         self.keywords_and = "human, humans, clinical, clinic, clinics, hospital, hospitals".split(", ")
         self.theme_keywords = "infection, prevention, control, personal, protective, equipment, PPE, disinfection, " \
-                              "sterilization, sanitization, washing, mask, " \
-                              "human, children, infant, adult, student, doctor, nurse, dentist, pharmacist, " \
-                              "patient, resident, hospital, long-term, clinic, clinician, health-care, healthcare, " \
-                              "health, facility, surface, hygiene".split(", ")
+                              "sterilization, sanitization, cleaning, washing, mask, hospital-acquired, nosocomial, " \
+                              "HIV, AIDs, viral, antiviral, prophylaxis".split(", ")
+        self.general_keywords = "human, children, infant, adult, student, doctor, nurse, dentist, pharmacist, " \
+                                "patient, resident, hospital, ICU, long-term, clinic, clinician, health-care, " \
+                                "healthcare, health, facility, surface, contact, hygiene".split(", ")
         self.theme_keywords_not = "use, usage, consumption, consume, prescribe, overuse, misuse, access, dosage, " \
-                                  "practice, prescription, stewardship, immunization, vaccine, behaviour, behavior, " \
-                                  "supply, safety, security, production, supply, chain, handling, processing, " \
-                                  "slaughter, butcher, butchery, packaging, import, export, retail, street, grocery, " \
-                                  "food, foodborne, food-borne".split(", ")
+                                  "practice, prescription, immunization, vaccine, slaughter, butcher, butchery, " \
+                                  "packaging, retail, street, grocery, food, foodborne, food-borne, pork, beef, " \
+                                  "dairy, mutton, meat, seafood, shops, store, market, food-producing, " \
+                                  "slaughterhouse".split(", ")
         self.prevention = "personal protective equipment, PPE, disinfection, sterilization, sanitization, " \
                           "hand washing, mask wearing, hospital surface, clinical surface".split(", ") + self.prevention
         self.prevention = list(dict.fromkeys(self.prevention))

@@ -24,15 +24,19 @@ class RAndD(Themes):
                        "inactivation, deactivation, identification".split(", ") + self.r_and_d
         self.r_and_d = list(dict.fromkeys(self.r_and_d))
         self.theme_keywords = "research, development, R&D, genesis, evolution, sequence, nanotechnology-based, trend, " \
-                              "model, review, scope, study, detect, diagnostic, mutation, alternative, agent, " \
-                              "susceptibility, activity, activation, activate, activator, deactivate, deactivation, " \
-                              "deactivator, inactivation, inactivate, mechanism, gene, genome, genomic, peptide, " \
-                              "plasmid, serotype, serovar, pathogen, carbapenem, biofilm, efflux, " \
-                              "pump, antibiotic, antimicrobial, antibacterial, anti-biotic, anti-microbial, " \
-                              "anti-bacterial, multidrug, multi-drug, drug, vaccine, therapeutic".split(", ")
-        self.theme_keywords_not = "use, usage, consumption, consume, prescribe, overuse, misuse, access, " \
-                                  "over-the-counter, duration, treatment, dosage, practice, prescription, " \
-                                  "stewardship, immunization, vaccine, behaviour, behavior, practice".split(", ")
+                              "model, deterministic, review, scope, study, detect, diagnostic, mutation, alternative, " \
+                              "agent, susceptibility, activity, activation, activate, activator, deactivate, " \
+                              "deactivation, deactivator, inactivation, inactivate, mechanism, gene, genome, genomic, " \
+                              "genotype, nucleotype, peptide, plasmid, serotype, serovar, pathogen, carbapenem, " \
+                              "biofilm, efflux, pump".split(", ")
+        self.general_keywords = "antibiotic, antimicrobial, antibacterial, anti-biotic, anti-microbial, " \
+                                "anti-bacterial, multidrug, multi-drug, drug, vaccine, therapeutic, novel, " \
+                                "method".split(", ")
+        self.theme_keywords_not = "use, usage, consumption, consume, prescribe, overuse, misuse, dosage, access, " \
+                                  "practice, prescription, stewardship, behaviour, behavior, infection, prevention, " \
+                                  "control, personal, protective, equipment, PPE, disinfection, sterilization, " \
+                                  "sanitization, cleaning, washing, mask, hospital-acquired, nosocomial, HIV, AIDs, " \
+                                  "viral, antiviral, prophylaxis, surface, contact, hygiene".split(", ")
 
 
 if __name__ == "__main__":

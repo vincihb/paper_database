@@ -18,25 +18,21 @@ class Animals(Themes):
                             "dairy, mutton, fish, fishes, seafood, chicken, chickens, piglet, " \
                             "piglets, shrimp, shrimps, oyster, oysters, pet, pets, companion animal, " \
                             "companion animals, canine, feline".split(", ")
-        self.theme_keywords = "use, usage, consumption, consume, prescribe, overuse, misuse, access, " \
-                              "over-the-counter, duration, treatment, dosage, practice, prescription, stewardship, " \
-                              "immunization, vaccine, behaviour, behavior, practice, probiotic, farm, " \
-                              "aquaculture, husbandry, veterinary, zoonotics, zoonoses, zoonosis, " \
-                              "CAFO, concentrated, feeding, operation, confined, manure, excreta, excrement, " \
-                              "animal, livestock, poultry, bird, rabbit, pig, cow, pork, beef, bovine, ovine, " \
-                              "lamb, dairy, mutton, fish, seafood, chicken, piglet, shrimp, oyster, pet, companion, " \
-                              "canine, feline, feces".split(", ")
+        self.theme_keywords = "use, usage, consumption, consume, prescribe, overuse, misuse, treatment, dosage, " \
+                              "access, practice, prescription, stewardship, immunization, vaccine, behaviour, " \
+                              "behavior".split(", ")
+        self.general_keywords = "probiotic, farm, farmland, aquaculture, aquacultural, husbandry, veterinary, " \
+                                "zoonotic, zoonoses, zoonosis, CAFO, concentrated, feeding, operation, confined, " \
+                                "manure, excreta, excrement, animal, livestock, poultry, bird, rabbit, pig, cow, " \
+                                "bovine, ovine, lamb, fish, chicken, piglet, shrimp, oyster, pet, companion, canine, " \
+                                "feline, cats, dogs, feces, cattle, wildlife, wild, boar, broiler, mammals, " \
+                                "horses".split(", ")
         self.theme_keywords_not = "human, children, infant, adult, student, doctor, nurse, dentist, pharmacist, " \
-                                  "patient, resident, hospital, long-term, clinic, clinician, health-care, " \
-                                  "healthcare, facility, pesticide, herbicide, fungicide, biocide, " \
-                                  "fertilizer, agriculture, agricultural, aquaculture, pond, tank, " \
-                                  "nursery, horticulture, harvest, plant, fruit, vegetable, crop, leaf, leaves, " \
-                                  "legume, root, produce, seaweed, kelp, algae, transmission, selective, pressure, " \
-                                  "clean, santitation, supply, environment, source, surface, river, lake, stream, " \
-                                  "marine, ground, influent, drinking, potable, treatment, removal, filtration, " \
-                                  "chlorination, ultraviolet, oxidation, " \
-                                  "water, wastewater, sewage, effluent, landfill, wildlife, remediation, removal, " \
-                                  "DNA, eDNA, environment, ecology, ecosystem, soil".split(", ")
+                                  "patient, resident, hospital, ICU, long-term, clinic, clinician, health-care, " \
+                                  "healthcare, health, facility, physician, pesticide, herbicide, fungicide, biocide, " \
+                                  "fertilizer, manure, agriculture, agricultural, pond, tank, nursery, horticulture, " \
+                                  "harvest, plant, fruit, vegetable, crop, leaf, leaves, legume, root, produce, " \
+                                  "seaweed, kelp, algae".split(", ")
 
 
 if __name__ == "__main__":
