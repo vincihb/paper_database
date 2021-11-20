@@ -4,29 +4,16 @@ from countries.Countries import Countries
 class LMIC(Countries):
     def __init__(self):
         super().__init__()
-        self.lst_of_countries = "Angola, Honduras, Philippines, Algeria, India, Samoa, Bangladesh, " \
-                                "Indonesia, Sao Tome and Principe, Belize, Iran, Islamic Republic of Iran," \
-                                "Senegal, Benin, Kenya, Solomon Islands, Bhutan, Kiribati, Sri Lanka, " \
-                                "Bolivia, Kyrgyz Republic, Tanzania, Cabo Verde, Lao PDR, Laos, " \
-                                "Lao People's Democratic Republic, Tajikistan, " \
-                                "Cambodia, Lesotho, Timor-Leste, Cameroon, Mauritania, Tunisia, Comoros, " \
-                                "Micronesia, Ukraine, Republic of Congo, Mongolia, Uzbekistan, " \
-                                "Cote d'Ivoire, Ivory Coast, Morocco, Vanuatu, Djibouti, Myanmar, Vietnam, " \
-                                "Egypt, Nepal, West Bank and Gaza, El Salvador, Nicaragua, Zambia, " \
-                                "Eswatini, Swaziland, Nigeria, Zimbabwe, Ghana, Pakistan, Haiti, Papua New Guinea"
-        self.lst_of_countries = self.lst_of_countries.split(", ")
+        self.lst_of_countries = ['Algeria', 'Bangladesh', 'Benin', 'Bhutan', 'Bolivia', 'Cambodia', 'Cameroon', 'Cape Verde', 'Comoros', 'East Timor', 'Egypt', 'Eswatini', 'Ghana', 'India', 'Indonesia', 'Iran', 'Ivory Coast', 'Kenya', 'Kyrgyzstan', 'Lesotho', 'Morocco', 'Myanmar', 'Nepal', 'Pakistan', 'Palestine', 'Philippines', 'Republic of Congo', 'Sri Lanka', 'Tanzania', 'Tunisia', 'Ukraine', 'Vanuatu', 'Vietnam', 'Zambia', 'Zimbabwe']
+        self.all_papers = self.get_all_papers()
 
 
 if __name__ == "__main__":
     a = LMIC()
-    papers = a.get_all_papers()
+    papers = a.all_papers
     print(len(papers))
-    i = 0
-    for paper in papers:
-        if i == 20:
-            break
-        i = i + 1
-        print(paper)
+    # print(dict(sorted(a.get_themes_distribution_secondary().items(), key=lambda x: x[1], reverse=True)))
+    # print(a.get_watercode_distribution_secondary())
     # papers = a.get_papers_from_country("India")
     # print(len(papers))
     # for paper in papers:

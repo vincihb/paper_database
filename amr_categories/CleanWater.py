@@ -34,7 +34,7 @@ class CleanWater(Themes):
 
 if __name__ == "__main__":
     a = CleanWater()
-    a.set_all_papers_primary_database()
+    a.set_all_papers_secondary_database()
     papers = a.all_papers
     print(len(papers))
     # # i = 0

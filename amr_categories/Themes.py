@@ -59,8 +59,8 @@ class Themes:
         return to_return
 
     def get_all_papers(self):
-        return self.pc.get_papers_and(self.pc.get_papers_from_list_of_keywords_or(self.keywords),
-                                      self.pc.get_papers_from_list_of_keywords_or(self.keywords_and))
+        return self.pc.get_papers_and(self.pc.get_papers_from_list_of_keywords_or(self.theme_keywords),
+                                      self.pc.get_papers_from_list_of_keywords_or(self.general_keywords))
 
     def get_papers_on_prevention(self):
         return self._get_papers_on_subject(self.prevention)

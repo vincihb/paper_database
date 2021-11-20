@@ -281,7 +281,7 @@ if __name__ == "__main__":
     # populate_sector()
     # populate_country()
     # get_theme(PaperCache(), '530')
-    populate_theme()
+    # populate_theme()
     # print("Done")
     pc = PaperCache()
     # get_theme(pc, '700')

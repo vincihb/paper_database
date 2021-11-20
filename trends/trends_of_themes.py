@@ -20,38 +20,38 @@ human_ipc = []
 plants = []
 rd = []
 pc = PaperCache()
-print(pc.get_all_journals())
+# print(pc.get_all_journals())
 
 a = Animals()
-a.set_all_papers_primary_database()
+a.set_all_papers()
 papers = a.all_papers
 total_papers = papers
 b = CleanWater()
-b.set_all_papers_primary_database()
+b.set_all_papers()
 papers = b.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 c = Environment()
-c.set_all_papers_primary_database()
+c.set_all_papers()
 papers = c.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 d = FoodSafety()
-d.set_all_papers_primary_database()
+d.set_all_papers()
 papers = d.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 e = HumanConsumption()
-e.set_all_papers_primary_database()
+e.set_all_papers()
 papers = e.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 f = HumanIPC()
-f.set_all_papers_primary_database()
+f.set_all_papers()
 papers = f.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 g = Plants()
-g.set_all_papers_primary_database()
+g.set_all_papers()
 papers = g.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 h = RAndD()
-h.set_all_papers_primary_database()
+h.set_all_papers()
 papers = h.all_papers
 total_papers = pc.get_papers_or(total_papers, papers)
 

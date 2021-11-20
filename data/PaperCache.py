@@ -69,6 +69,11 @@ class PaperCache:
                 journals.update({paper.get('JOURNAL'): journals.get(paper.get('JOURNAL')) + 1})
         return dict(sorted(journals.items(), key=lambda x: x[1], reverse=True))
 
+    def get_all_countries(self):
+        sql = 'SELECT DISTINCT `COUNTRY_NAME` FROM COUNTRY'
+        result = self.db.exec_select(sql).fetchall()
+        return result
+
     # Sector, theme, and country getters
     def get_paper_theme(self, paper_id):
         sql = 'SELECT * FROM `THEME` WHERE PAPER_ID=?'
