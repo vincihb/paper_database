@@ -9,7 +9,11 @@ all_countries = [val.get('COUNTRY_NAME') for val in pc.get_all_countries()]
 regions = {'East Asia & Pacific': [], 'Europe & Central Asia': [], 'Latin America & Caribbean': [],
            'Middle East & North Africa': [], 'North America': [], 'South Asia': [], 'Sub-Saharan Africa': []}
 incomes = {'High income': [], 'Upper middle income': [], 'Lower middle income': [], 'Low income': []}
-print(all_countries)
+# print(all_countries)
+str_total = ""
+for val in all_countries:
+    str_total += val + ', '
+print(str_total)
 print(len(all_countries))
 items = []
 with open(object_path) as csv_file:
@@ -36,12 +40,26 @@ for country in all_countries:
         print("Not in database")
         print(country)
 
-print(regions)
+# print(regions)
+for key in regions.keys():
+    print(key)
+    data = regions.get(key)
+    str_total = ""
+    for val in data:
+        str_total += val + ', '
+    print(str_total)
 total = 0
 for val in regions.values():
     total += len(val)
 print(total)
-print(incomes)
+# print(incomes)
+for key in incomes.keys():
+    print(key)
+    data = incomes.get(key)
+    str_total = ""
+    for val in data:
+        str_total += val + ', '
+    print(str_total)
 total = 0
 for val in incomes.values():
     total += len(val)

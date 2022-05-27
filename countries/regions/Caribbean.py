@@ -13,5 +13,7 @@ if __name__ == "__main__":
     a = Caribbean()
     papers = a.all_papers
     print(len(papers))
-    # print(dict(sorted(a.get_themes_distribution_secondary().items(), key=lambda x: x[1], reverse=True)))
-    # print(a.get_watercode_distribution_secondary())
+    print(dict(sorted(a.get_themes_distribution().items(), key=lambda x: x[1], reverse=True)))
+    print(a.get_watercode_distribution())
+    print(dict(sorted(a.get_themes_distribution_secondary().items(), key=lambda x: x[1], reverse=True)))
+    print(a.get_watercode_distribution_secondary())

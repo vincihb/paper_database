@@ -51,6 +51,20 @@ class Themes:
     def set_general_keywords(self, keywords):
         self.general_keywords = [k for k in keywords if k not in self.theme_keywords_not]
 
+    # def get_pillars_from_paper_id(self, paper_id):
+    #     pillars = {'prevention': self.prevention, 'surveillance': self.surveillance,
+    #                'mitigation': self.mitigation, 'innovation': self.r_and_d}
+    #     to_return = []
+    #     keywords = self.pc.get_keywords_from_paper_id(paper_id)
+    #     keywords = [self.ps.stem(a.get('KEYWORD')) for a in keywords]
+    #     for key in pillars.keys():
+    #         s = remove_repeats([self.ps.stem(a) for a in pillars.get(key)])
+    #         for keyword in keywords:
+    #             if keyword in s:
+    #                 to_return.append(key)
+    #                 break
+    #     return to_return
+
     def get_papers_by_year(self, year):
         to_return = []
         for paper in self.all_papers:
@@ -59,8 +73,8 @@ class Themes:
         return to_return
 
     def get_all_papers(self):
-        return self.pc.get_papers_and(self.pc.get_papers_from_list_of_keywords_or(self.theme_keywords),
-                                      self.pc.get_papers_from_list_of_keywords_or(self.general_keywords))
+        return self.pc.get_papers_anded_by_keywords(self.pc.get_papers_from_list_of_keywords_or(self.theme_keywords),
+                                                    self.pc.get_papers_from_list_of_keywords_or(self.general_keywords))
 
     def get_papers_on_prevention(self):
         return self._get_papers_on_subject(self.prevention)

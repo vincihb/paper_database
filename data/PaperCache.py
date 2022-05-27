@@ -254,7 +254,7 @@ class PaperCache:
         return self.get_papers_from_phrase(phrase)
 
     @staticmethod
-    def get_papers_and(papers_1, papers_2):
+    def get_papers_anded_by_keywords(papers_1, papers_2):
         to_return = []
         for paper_1 in papers_1:
             for paper_2 in papers_2:
@@ -267,7 +267,7 @@ class PaperCache:
         return to_return
 
     @staticmethod
-    def get_papers_and_themes(papers_1, papers_2):
+    def get_papers_anded_by_id(papers_1, papers_2):
         papers_1 = sorted(papers_1, key=lambda x: int(x.get('ID')))
         papers_2 = sorted(papers_2, key=lambda x: int(x.get('ID')))
         to_return = []
@@ -293,7 +293,7 @@ class PaperCache:
         # return to_return
 
     @staticmethod
-    def get_papers_and_countries(papers_1, papers_2):
+    def get_papers_anded_by_countries(papers_1, papers_2):
         to_return = []
         for paper_1 in papers_1:
             for paper_2 in papers_2:
@@ -332,8 +332,8 @@ class PaperCache:
             index = index + 1
         return sorted(paper_keywords, key=lambda x: x.get('WEIGHT'), reverse=True)
 
-    def get_papers_or(self, papers_1, papers_2):
-        to_return = self.get_papers_and(papers_1, papers_2)
+    def get_papers_ored_by_id(self, papers_1, papers_2):
+        to_return = self.get_papers_anded_by_id(papers_1, papers_2)
         for paper_1 in papers_1:
             in_common_papers = False
             for paper in to_return:
@@ -351,8 +351,8 @@ class PaperCache:
         # to_return = sorted(to_return, key=lambda x: x.get('WEIGHT'), reverse=True)
         return to_return
 
-    def get_papers_or_countries(self, papers_1, papers_2):
-        to_return = self.get_papers_and_countries(papers_1, papers_2)
+    def get_papers_ored_by_countries(self, papers_1, papers_2):
+        to_return = self.get_papers_anded_by_countries(papers_1, papers_2)
         for paper_1 in papers_1:
             in_common_papers = False
             for paper in to_return:

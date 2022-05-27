@@ -29,31 +29,31 @@ total_papers = papers
 b = CleanWater()
 b.set_all_papers()
 papers = b.all_papers
-total_papers = pc.get_papers_or(total_papers, papers)
+total_papers = pc.get_papers_ored_by_id(total_papers, papers)
 c = Environment()
 c.set_all_papers()
 papers = c.all_papers
-total_papers = pc.get_papers_or(total_papers, papers)
+total_papers = pc.get_papers_ored_by_id(total_papers, papers)
 d = FoodSafety()
 d.set_all_papers()
 papers = d.all_papers
-total_papers = pc.get_papers_or(total_papers, papers)
+total_papers = pc.get_papers_ored_by_id(total_papers, papers)
 e = HumanConsumption()
 e.set_all_papers()
 papers = e.all_papers
-total_papers = pc.get_papers_or(total_papers, papers)
+total_papers = pc.get_papers_ored_by_id(total_papers, papers)
 f = HumanIPC()
 f.set_all_papers()
 papers = f.all_papers
-total_papers = pc.get_papers_or(total_papers, papers)
+total_papers = pc.get_papers_ored_by_id(total_papers, papers)
 g = Plants()
 g.set_all_papers()
 papers = g.all_papers
-total_papers = pc.get_papers_or(total_papers, papers)
+total_papers = pc.get_papers_ored_by_id(total_papers, papers)
 h = RAndD()
 h.set_all_papers()
 papers = h.all_papers
-total_papers = pc.get_papers_or(total_papers, papers)
+total_papers = pc.get_papers_ored_by_id(total_papers, papers)
 
 print(len(total_papers))
 all_papers = pc.get_all_papers()

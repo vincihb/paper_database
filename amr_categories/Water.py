@@ -1,4 +1,5 @@
 from data.PaperCache import PaperCache
+from amr_categories.CleanWater import CleanWater
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
@@ -8,6 +9,7 @@ class Water:
     def __init__(self):
         self.pc = PaperCache()
         self.ps = PorterStemmer()
+        self.cw = CleanWater()
         self._water_codes = ['green', 'blue', 'brown']
         self._subcategories = {}
         self._keywords_to_subcategories = {}
@@ -78,8 +80,8 @@ class Water:
         for subcat in subcategories:
             to_input = to_input + self._keywords_to_subcategories.get(subcat)
         to_input = list(dict.fromkeys(to_input))
-        return self.pc.get_papers_and_themes(self.pc.get_papers_from_list_of_keywords_or(to_input),
-                                             self.pc.get_papers_from_primary_theme('water'))
+        return self.pc.get_papers_anded_by_id(self.pc.get_papers_from_list_of_keywords_or(to_input),
+                                              self.pc.get_papers_from_primary_theme('water'))
 
     def get_primary_papers_from_watercode_partition(self):
         return self._get_papers_from_watercode_partition(self.pc.get_papers_from_primary_theme('water'))
@@ -147,7 +149,8 @@ class Water:
         for keyword in keywords:
             k = keyword.get('KEYWORD')
             for key in self._keywords_to_subcategories.keys():
-                if self.ps.stem(k) in [self.ps.stem(keyword_cat) for keyword_cat in self._keywords_to_subcategories.get(key)]:
+                if self.ps.stem(k) in [self.ps.stem(keyword_cat) for keyword_cat in
+                                       self._keywords_to_subcategories.get(key)]:
                     dict_of_subcat.update({key: keyword.get('WEIGHT') + dict_of_subcat.get(key)})
         subcat = ""
         max_val = 0
@@ -175,6 +178,37 @@ class Water:
                 subcat = key
                 max_val = val
         return {'PAPER_ID': keywords[0].get('PAPER_ID'), 'DOI': doi, 'SUBCATEGORY': subcat}
+
+    def get_watercode_pillar_dist_primary(self):
+        return self._get_watercode_dist_pillar(self.get_primary_papers_from_watercode_partition(),
+                                               self._get_pillar_dist_primary())
+
+    def get_watercode_pillar_dist_secondary(self):
+        return self._get_watercode_dist_pillar(self.get_secondary_papers_from_watercode_partition(),
+                                               self._get_pillar_dist_secondary())
+
+    def _get_watercode_dist_pillar(self, water_codes_part, pillar_dist):
+        to_return = {}
+        for key in water_codes_part.keys():
+            temp = {}
+            for pillar in pillar_dist.keys():
+                temp.update({pillar: len(self.pc.get_papers_anded_by_id(pillar_dist.get(pillar), water_codes_part.get(key)))})
+            to_return.update({key: temp})
+        return to_return
+
+    def _get_pillar_dist_primary(self):
+        self.cw.set_all_papers_primary_database()
+        return {'prevention': self.cw.get_papers_on_prevention(),
+                'surveillance': self.cw.get_papers_on_surveillance(),
+                'mitigation': self.cw.get_papers_on_mitigation(),
+                'innovation': self.cw.get_papers_on_innovation()}
+
+    def _get_pillar_dist_secondary(self):
+        self.cw.set_all_papers_secondary_database()
+        return {'prevention': self.cw.get_papers_on_prevention(),
+                'surveillance': self.cw.get_papers_on_surveillance(),
+                'mitigation': self.cw.get_papers_on_mitigation(),
+                'innovation': self.cw.get_papers_on_innovation()}
 
     @staticmethod
     def get_papers_by_year(papers, year):
@@ -210,9 +244,32 @@ if __name__ == "__main__":
     print(w.watercodes)
     print(w.subcategories)
     print(w.keywords_to_subcategories)
-
-    water_codes = w.get_papers_from_watercode_partition()
-    w.get_papers_by_year(water_codes.get('green'))
+    water_codes = w.get_primary_papers_from_watercode_partition()
+    papers = water_codes.get('green')
+    for paper in papers:
+        print(paper)
+    # print(w.get_watercode_pillar_dist_primary())
+    # print(w.get_watercode_pillar_dist_secondary())
+    # dict_themes = {'randd': 0, 'animals': 0, 'plants': 0, 'consumption': 0, 'ipc': 0, 'environment': 0, 'food': 0}
+    # water_codes = w.get_secondary_papers_from_watercode_partition()
+    # papers = water_codes.get('green')
+    # for paper in papers:
+    #     dict_themes.update({paper.get('PRIMARY_THEME'): dict_themes.get(paper.get('PRIMARY_THEME')) + 1})
+    # print(dict_themes)
+    # print('======')
+    # dict_themes = {'randd': 0, 'animals': 0, 'plants': 0, 'consumption': 0, 'ipc': 0, 'environment': 0, 'food': 0}
+    # papers = water_codes.get('blue')
+    # for paper in papers:
+    #     dict_themes.update({paper.get('PRIMARY_THEME'): dict_themes.get(paper.get('PRIMARY_THEME')) + 1})
+    # print(dict_themes)
+    # print('======')
+    # dict_themes = {'randd': 0, 'animals': 0, 'plants': 0, 'consumption': 0, 'ipc': 0, 'environment': 0, 'food': 0}
+    # papers = water_codes.get('brown')
+    # for paper in papers:
+    #     dict_themes.update({paper.get('PRIMARY_THEME'): dict_themes.get(paper.get('PRIMARY_THEME')) + 1})
+    # print(dict_themes)
+    # print("=====")
+    # dict_themes = {'randd': 0, 'animals': 0, 'plants': 0, 'consumption': 0, 'ipc': 0, 'environment': 0, 'food': 0}
     # papers = w.get_papers_from_watercode('green')
     # print(len(papers))
     # papers = w.get_papers_from_watercode('blue')

@@ -12,11 +12,9 @@ if __name__ == "__main__":
     a = LMIC()
     papers = a.all_papers
     print(len(papers))
-    # print(dict(sorted(a.get_themes_distribution_secondary().items(), key=lambda x: x[1], reverse=True)))
-    # print(a.get_watercode_distribution_secondary())
-    # papers = a.get_papers_from_country("India")
-    # print(len(papers))
-    # for paper in papers:
-    #     print(paper)
+    print(dict(sorted(a.get_themes_distribution().items(), key=lambda x: x[1], reverse=True)))
+    print(a.get_watercode_distribution())
+    print(dict(sorted(a.get_themes_distribution_secondary().items(), key=lambda x: x[1], reverse=True)))
+    print(a.get_watercode_distribution_secondary())
 
 
